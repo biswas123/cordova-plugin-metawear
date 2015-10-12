@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        id="com.mbientlab.metawear"
+        version="0.2.13">
+  <name>MetaWear</name>
+  <description>The coolest Plugin ever implemented</description>
+  <license>Apache 2.0</license>
+  <keywords>cordova,coolest</keywords>
+  <repo></repo>
+  <issue></issue>
+  <js-module src="www/MWDevice.js" name="MWDevice">
+    <clobbers target="metawear.mwdevice" />
+  </js-module>
+  <!-- android -->
+  <platform name="android">
+    <config-file target="res/xml/config.xml" parent="/*">
+      <feature name="MWDevice" >
+        <param name="android-package" value="com.mbientlab.metawear.cordova.MWDevice"/>
+      </feature>
+    </config-file>
+    <config-file target="AndroidManifest.xml" parent="/manifest/application">
+      <service android:name="com.mbientlab.metawear.MetaWearBleService">
+      </service>
+    </config-file>
+    <framework src="src/android/build-extras.gradle" custom="true" type="gradleReference" />
+    <source-file src="src/android/MWDevice.java" target-dir="src/com/mbientlab/metawear/cordova" />
+  </platform>
+</plugin>
