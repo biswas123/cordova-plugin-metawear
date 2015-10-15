@@ -19,6 +19,11 @@ module.exports.connect = function(macAddress, success, failure){
     exec(success, failure, "MWDevice", "connect", [macAddress]);
 }
 module.exports.disconnect = function(){
-    console.log("MWDevice.js: connect");
+    console.log("MWDevice.js: disconnect");
     exec(null, null, "MWDevice", "disconnect", []);
+}
+
+module.exports.scanForDevices = function(){
+    console.log("MWDevice.js: scanForDevices");
+    exec(null, null, "MWDevice", 'scanForDevices', []);
 }
