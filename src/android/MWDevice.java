@@ -5,6 +5,7 @@ import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.PluginResult;
+import org.json.JSONObject;
 import android.content.ServiceConnection;
 import android.content.Context;
 import android.content.Intent;
@@ -22,6 +23,13 @@ import org.json.JSONException;
 import android.os.IBinder;
 import com.mbientlab.metawear.MetaWearBleService;
 import com.mbientlab.metawear.MetaWearBoard;
+import com.mbientlab.metawear.AsyncOperation;
+import com.mbientlab.metawear.RouteManager;
+import com.mbientlab.metawear.RouteManager.MessageHandler;
+import com.mbientlab.metawear.data.CartesianFloat;
+import com.mbientlab.metawear.module.Accelerometer;
+import com.mbientlab.metawear.Message;
+import com.mbientlab.metawear.UnsupportedModuleException;
 
 /**
  *
@@ -38,6 +46,9 @@ public class MWDevice extends CordovaPlugin implements ServiceConnection{
     public static final String INITIALIZE = "initialize";
     public static final String CONNECT = "connect";
     public static final String DISCONNECT = "disconnect";
+    public static final String READ_RSSI = "readRssi";
+    public static final String START_ACCELEROMETER = "startAccelerometer";
+    public static final String STOP_ACCELEROMETER = "stopAccelerometer";
     private MetaWearBleService.LocalBinder serviceBinder;
     private CallbackContext callbackContext;
     private String mwMacAddress;
@@ -84,6 +95,17 @@ public class MWDevice extends CordovaPlugin implements ServiceConnection{
         } else if(action.equals(DISCONNECT)){
             mwBoard.disconnect();
             return true;
+        } else if(action.equals(READ_RSSI)){
+            mwCallbackContexts.put(READ_RSSI, callbackContext);
+            readRssi();
+            return true;
+        } else if(action.equals(START_ACCELEROMETER)){
+            mwCallbackContexts.put(START_ACCELEROMETER, callbackContext);
+            startAccelerometer();
+            return true;
+        } else if(action.equals(STOP_ACCELEROMETER)){
+            stopAccelerometer();
+            return true;
         }
         else{
             return false;}
@@ -99,7 +121,7 @@ public class MWDevice extends CordovaPlugin implements ServiceConnection{
         serviceBinder = (MetaWearBleService.LocalBinder) service;
         Log.i("MWDevice", "Service Connected");
         mwCallbackContexts.get(INITIALIZE).sendPluginResult(new PluginResult(PluginResult.Status.OK,
-                                                                           "initialized"));
+                                                                             "initialized"));
     }
 
     @Override
@@ -118,7 +140,91 @@ public class MWDevice extends CordovaPlugin implements ServiceConnection{
         return(mwBoard);
     }
 
-    private final ConnectionStateHandler stateHandler= new ConnectionStateHandler() {
+    private final AsyncOperation.CompletionHandler<RouteManager> accelerometerHandler =
+        new AsyncOperation.CompletionHandler<RouteManager>(){
+            @Override
+            public void success(RouteManager result){
+                result.subscribe("accel_stream_key", new MessageHandler() {
+                        @Override
+                        public void process(Message msg){
+                            CartesianFloat axes = msg.getData(CartesianFloat.class);
+                            JSONObject resultObject = new JSONObject();
+                            try {
+                            resultObject.put("x", axes.x());
+                            resultObject.put("y", axes.y());
+                            resultObject.put("z", axes.z());
+                            } catch (JSONException e){
+                                Log.e("Metawear Cordova Error: ", e.toString());
+                            }
+                            PluginResult pluginResult = new PluginResult(PluginResult.Status.OK,
+                                                                         resultObject);
+                            pluginResult.setKeepCallback(true);
+                            mwCallbackContexts.get(START_ACCELEROMETER).sendPluginResult(pluginResult);
+                            Log.i("Metawear Cordova Axis", axes.toString());
+                        }
+                    });
+            }
+        };
+
+    private Accelerometer getAccelerometer(){
+        Accelerometer accelModule = null;
+
+        try {
+            accelModule= mwBoard.getModule(Accelerometer.class);
+        }catch(UnsupportedModuleException e){
+            Log.e("Metawear Cordova Error: ", e.toString());
+        }
+        return accelModule;
+    }
+
+    private void startAccelerometer(){
+        Accelerometer accelModule = getAccelerometer();
+        accelModule.routeData()
+            .fromAxes().stream("accel_stream_key")
+            .commit().onComplete(accelerometerHandler);
+
+
+        // Set the sampling frequency to 50Hz, or closest valid ODR
+        accelModule.setOutputDataRate(50.f);
+        // Set the measurement range to +/- 4g, or closet valid range
+        accelModule.setAxisSamplingRange(4.0f);
+
+        // enable axis sampling
+        accelModule.enableAxisSampling();
+
+        // Switch the accelerometer to active mode
+        accelModule.start();
+    }
+
+    private void stopAccelerometer(){
+        getAccelerometer().stop();
+    }
+
+    private final AsyncOperation.CompletionHandler<Integer> readRssiHandler =
+        new AsyncOperation.CompletionHandler<Integer>() {
+            @Override
+            public void success(final Integer result){
+                Log.i("Metawear Cordova RSSI: ", result.toString());
+                PluginResult pluginResult = new PluginResult(PluginResult.Status.OK,
+                                                             result.toString());
+                mwCallbackContexts.get(READ_RSSI).sendPluginResult(pluginResult);
+            }
+
+            @Override
+            public void failure(Throwable error){
+                Log.e("Metawear Cordova Error: ", error.toString());
+                PluginResult pluginResult = new PluginResult(PluginResult.Status.ERROR,
+                                                             "ERROR");
+                mwCallbackContexts.get(READ_RSSI).sendPluginResult(pluginResult);
+            }
+        };
+        
+    public void readRssi() {
+        AsyncOperation<Integer> result = mwBoard.readRssi();
+        result.onComplete(readRssiHandler);
+    }
+    
+    private final ConnectionStateHandler stateHandler = new ConnectionStateHandler() {
             @Override
             public void connected() {
                 Log.i("MainActivity", "Connected");

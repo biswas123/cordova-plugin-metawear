@@ -27,3 +27,18 @@ module.exports.scanForDevices = function(){
     console.log("MWDevice.js: scanForDevices");
     exec(null, null, "MWDevice", 'scanForDevices', []);
 }
+
+module.exports.readRssi = function(success, failure){
+    console.log("MWDevice.js: scanForDevices");
+    exec(success, failure, "MWDevice", 'readRssi', []);
+}
+
+module.exports.startAccelerometer = function(success, failure){
+    console.log("MWDevice.js: start Accelerometer");
+    exec(success, failure, "MWDevice", 'startAccelerometer', []);
+}
+
+module.exports.stopAccelerometer = function(){
+    console.log("MWDevice.js: stopAccelerometer");
+    exec(null, null, "MWDevice", 'stopAccelerometer', []);
+}
