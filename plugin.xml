@@ -4,7 +4,7 @@
     MetaWear
   </name>
   <description>
-    The coolest Plugin ever implemented
+    This plugin wraps the Metawear IOS and Android API.
   </description>
   <license>
     Apache 2.0
