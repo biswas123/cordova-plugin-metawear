@@ -5,20 +5,20 @@ Cordova plugin for the MetaWear API.  This is currently a work in progress.  The
 
 ##Getting Started:
 
-*Create your Cordova project
+Create your Cordova project
 ```
 cordova create <your project>
 ```
-*Add in the plugin
+Add in the plugin
 ```
 cordova plugin add http://www.github.com/mbientlab-projects/cordova-plugin-metawear.html
 ```
-*Add in your platform
+Add in your platform
 ```
 cordova platform add android
 cordova platform add ios
 ```
-*Load Device.js in your javascript.
+Load Device.js in your javascript.
 
 
 ##Using The Plugin
