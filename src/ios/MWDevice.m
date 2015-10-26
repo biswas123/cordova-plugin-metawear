@@ -4,21 +4,31 @@
 #import "MBLMetaWearManager.h"
 
 
-@implementation MWDevice
+@implementation MWDevice {
+  NSArray *scannedDevices;
+}
 
 - (void)scanForDevices:(CDVInvokedUrlCommand*)command
 {
   CDVPluginResult* pluginResult = nil;
+  NSMutableDictionary *boards = [NSMutableDictionary dictionaryWithDictionary:@{}];
 
-  [[MBLMetaWearManager sharedManager] startScanForMetaWearsAllowDuplicates:NO handler:^(NSArray *array) {
+  [[MBLMetaWearManager sharedManager] startScanForMetaWearsAllowDuplicates:YES handler:^(NSArray *array) {
+      scannedDevices = array;
+      [[MBLMetaWearManager sharedManager] stopScanForMetaWears];
       for (MBLMetaWear *device in array) {
+        NSMutableDictionary *entry = [NSMutableDictionary dictionaryWithDictionary:@{}];
+        entry[@"address"] = device.identifier.UUIDString;
+        entry[@"rssi"] = [device.discoveryTimeRSSI stringValue];
+        boards[device.identifier.UUIDString] = entry;
         NSLog(@"Found MetaWear: %@", device);
       }
-    }];
+      CDVPluginResult* pluginResult = nil;
+      pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:boards];
 
-  pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"hello"];
+      [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+   }];
 
-  [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
 @end
