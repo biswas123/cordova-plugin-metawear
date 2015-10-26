@@ -23,9 +23,9 @@ module.exports.disconnect = function(){
     exec(null, null, "MWDevice", "disconnect", []);
 }
 
-module.exports.scanForDevices = function(){
+module.exports.scanForDevices = function(success, failure){
     console.log("MWDevice.js: scanForDevices");
-    exec(null, null, "MWDevice", 'scanForDevices', []);
+    exec(success, failure, "MWDevice", 'scanForDevices', []);
 }
 
 module.exports.readRssi = function(success, failure){
