@@ -44,6 +44,7 @@ public class MWDevice extends CordovaPlugin implements ServiceConnection{
     public static final String TAG = "com.mbientlab.metawear.cordova";
 
     public static final String INITIALIZE = "initialize";
+    public static final String SCAN_FOR_DEVICES = "scanForDevices";
     public static final String CONNECT = "connect";
     public static final String DISCONNECT = "disconnect";
     public static final String READ_RSSI = "readRssi";
@@ -57,6 +58,7 @@ public class MWDevice extends CordovaPlugin implements ServiceConnection{
     private boolean initialized = false;
     private RSSI rssi;
     private MWAccelerometer mwAccelerometer;
+    private BluetoothScanner bluetoothScanner;
     
     /**
      * Constructor.
@@ -74,6 +76,7 @@ public class MWDevice extends CordovaPlugin implements ServiceConnection{
         rssi = new RSSI(this);
         mwAccelerometer = new MWAccelerometer(this);
         mwCallbackContexts = new HashMap<String, CallbackContext>(); 
+        bluetoothScanner = new BluetoothScanner(this);
         Context applicationContext = cordova.getActivity().getApplicationContext();
         applicationContext.bindService(
                                        new Intent(cordova.getActivity(),
@@ -106,7 +109,13 @@ public class MWDevice extends CordovaPlugin implements ServiceConnection{
                 connectBoard();
             }
             return true;
-        } else if(action.equals(DISCONNECT)){
+        } else if(action.equals(SCAN_FOR_DEVICES)){
+            mwCallbackContexts.put(SCAN_FOR_DEVICES, callbackContext);
+            if(initialized){
+                bluetoothScanner.startBleScan();
+            }
+            return true;
+        }else if(action.equals(DISCONNECT)){
             mwBoard.disconnect();
             return true;
         } else if(action.equals(READ_RSSI)){
@@ -137,7 +146,13 @@ public class MWDevice extends CordovaPlugin implements ServiceConnection{
         initialized = true;
         if(mwCallbackContexts.get(CONNECT) != null){
             connectBoard();
-        }else{
+        }else if(mwCallbackContexts.get(SCAN_FOR_DEVICES) != null){
+            bluetoothScanner.startBleScan();
+        }
+
+        if(mwCallbackContexts.get(CONNECT) == null &&
+           mwCallbackContexts.get(SCAN_FOR_DEVICES) == null)
+        {
             mwCallbackContexts.get(INITIALIZE).sendPluginResult(new PluginResult(PluginResult.Status.OK,
                                                                              "initialized"));
         }
