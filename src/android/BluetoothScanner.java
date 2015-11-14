@@ -12,6 +12,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import java.util.ArrayList;
 import android.content.Context;
+import java.util.HashSet;
+import java.util.UUID;
+import com.mbientlab.metawear.MetaWearBoard;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 /**
  *
@@ -29,7 +34,8 @@ public class BluetoothScanner{
     private boolean isScanning = false;
     private BluetoothAdapter btAdapter;
     private JSONObject boards;
-
+    private HashSet<UUID> filterServiceUuids;
+    
     public BluetoothScanner(MWDevice device){
         mwDevice = device;
         scannerHandler = new Handler();
@@ -37,23 +43,72 @@ public class BluetoothScanner{
         if (btAdapter == null) {
             throw new RuntimeException("Metawear Cordova Plugin:  No bluetooth Adapter found!");
         }
-   }
+        filterServiceUuids = new HashSet();
+        filterServiceUuids.add(MetaWearBoard.METAWEAR_SERVICE_UUID);
+        filterServiceUuids.add(MetaWearBoard.METABOOT_SERVICE_UUID);
+    }
 
     private final BluetoothAdapter.LeScanCallback scanCallback= new BluetoothAdapter.LeScanCallback() {
-        @Override
-        public void onLeScan(BluetoothDevice bluetoothDevice, int rssi, byte[] scanRecord) {
-            ///< Service UUID parsing code taking from stack overflow= http://stackoverflow.com/a/24539704
-            JSONObject resultObject = new JSONObject();
-            try {
-                resultObject.put("address",  bluetoothDevice.getAddress());
-                resultObject.put("rssi", String.valueOf(rssi));
-                boards.put(bluetoothDevice.getAddress(), resultObject);
-            } catch (JSONException e){
-                Log.e("Metawear Cordova Error: ", e.toString());
+            @Override
+            public void onLeScan(BluetoothDevice bluetoothDevice, int rssi, byte[] scanRecord) {
+                ///< Service UUID parsing code taking from stack overflow= http://stackoverflow.com/a/24539704
+                ByteBuffer buffer= ByteBuffer.wrap(scanRecord).order(ByteOrder.LITTLE_ENDIAN);
+                boolean stop= false;
+                while (!stop && buffer.remaining() > 2) {
+                    byte length = buffer.get();
+                    if (length == 0) break;
+
+                    byte type = buffer.get();
+                    switch (type) {
+                    case 0x02: // Partial list of 16-bit UUIDs
+                    case 0x03: // Complete list of 16-bit UUIDs
+                        while (length >= 2) {
+                            UUID serviceUUID= UUID.fromString(String.format("%08x-0000-1000-8000-00805f9b34fb", buffer.getShort()));
+                            stop= filterServiceUuids.isEmpty() || filterServiceUuids.contains(serviceUUID);
+                            if (stop) {
+                                foundDevice(bluetoothDevice, rssi);
+                            }
+
+                            length -= 2;
+                        }
+                        break;
+
+                    case 0x06: // Partial list of 128-bit UUIDs
+                    case 0x07: // Complete list of 128-bit UUIDs
+                        while (!stop && length >= 16) {
+                            long lsb= buffer.getLong(), msb= buffer.getLong();
+                            stop= filterServiceUuids.isEmpty() || filterServiceUuids.contains(new UUID(msb, lsb));
+                            if (stop) {
+                                foundDevice(bluetoothDevice, rssi);
+                            }
+                            length -= 16;
+                        }
+                        break;
+
+                    default:
+                        buffer.position(buffer.position() + length - 1);
+                        break;
+                    }
+                }
+
+                if (!stop && filterServiceUuids.isEmpty()) {
+                    foundDevice(bluetoothDevice, rssi);
+                }
+
             }
-            Log.i("Metawear Cordova scan devices,  device found:", resultObject.toString());
-        }
-    };
+
+            private void foundDevice(BluetoothDevice bluetoothDevice, int rssi){
+                JSONObject resultObject = new JSONObject();
+                try {
+                    resultObject.put("address",  bluetoothDevice.getAddress());
+                    resultObject.put("rssi", String.valueOf(rssi));
+                    boards.put(bluetoothDevice.getAddress(), resultObject);
+                } catch (JSONException e){
+                    Log.e("Metawear Cordova Error: ", e.toString());
+                }
+                Log.i("Metawear Cordova scan devices,  device found:", resultObject.toString());
+            }
+        };
 
     public void startBleScan() {
         boards = new JSONObject();
