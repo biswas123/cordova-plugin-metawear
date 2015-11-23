@@ -7,5 +7,8 @@
 
 - (void)scanForDevices:(CDVInvokedUrlCommand*)command;
 - (void)connect:(CDVInvokedUrlCommand*)command;
+- (void)readRssi:(CDVInvokedUrlCommand*)command;
+
+@property MBLMetaWear *connectedDevice;
 
 @end

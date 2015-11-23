@@ -1,12 +1,15 @@
 #import "MWDevice.h"
+#import "RSSI.h"
 #import <Cordova/CDV.h>
 #import "MBLMetaWear.h"
 #import "MBLMetaWearManager.h"
+#import "MWAccelerometer.h"
 
 
 @implementation MWDevice {
   NSArray *scannedDevices;
-  MBLMetaWear *connectedDevice;
+  RSSI *rssi;
+  MWAccelerometer *accelerometer;
 }
 
 - (void)scanForDevices:(CDVInvokedUrlCommand*)command
@@ -14,8 +17,11 @@
   CDVPluginResult* pluginResult = nil;
   NSMutableDictionary *boards = [NSMutableDictionary dictionaryWithDictionary:@{}];
 
+  NSLog(@"Scanning for Metawears");
+
   [[MBLMetaWearManager sharedManager] startScanForMetaWearsAllowDuplicates:YES handler:^(NSArray *array) {
       scannedDevices = array;
+      NSLog(@"Scanning callback");
       [[MBLMetaWearManager sharedManager] stopScanForMetaWears];
       for (MBLMetaWear *device in array) {
         NSMutableDictionary *entry = [NSMutableDictionary dictionaryWithDictionary:@{}];
@@ -52,7 +58,7 @@
               }
               else {
                 pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"CONNECTED"];
-                connectedDevice = device;
+                _connectedDevice = device;
               }
               [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
             }];
@@ -70,7 +76,7 @@
   __block CDVPluginResult* pluginResult = nil;
 
   NSLog(@"disconnecting from metawear");
-  [connectedDevice disconnectWithHandler:^(NSError *error) {
+  [_connectedDevice disconnectWithHandler:^(NSError *error) {
       if ([error.domain isEqualToString:kMBLErrorDomain] &&
           error.code == kMBLErrorConnectionTimeout) {
         NSLog(@"Disconnect Problem");
@@ -79,10 +85,35 @@
       else {
         NSLog(@"disconnecting");
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"DISCONNECTED"];
-        connectedDevice = nil;
+        _connectedDevice = nil;
       }
       [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     }];
 }
 
+- (void)readRssi:(CDVInvokedUrlCommand*)command
+{
+  if(rssi == nil)
+    {
+      rssi = [[RSSI alloc] initWithDevice:self];
+    }
+  NSLog(@"read RSSI on %@", rssi);
+  [rssi readRssi:command];
+}
+
+- (void)startAccelerometer:(CDVInvokedUrlCommand*)command
+{
+  if(accelerometer == nil)
+    {
+      accelerometer = [[MWAccelerometer alloc] initWithDevice:self];
+    }
+  NSLog(@"read Accelerometer on %@", accelerometer);
+  [accelerometer startAccelerometer:command];
+}
+
+- (void)stopAccelerometer:(CDVInvokedUrlCommand*)command
+{
+  NSLog(@"stop accelerometer on %@", accelerometer);
+  [accelerometer stopAccelerometer:command];
+}
 @end
