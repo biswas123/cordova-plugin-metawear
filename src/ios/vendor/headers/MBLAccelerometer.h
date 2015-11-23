@@ -33,11 +33,11 @@
  * contact MbientLab via email: hello@mbientlab.com
  */
 
-#import <MetaWear/MBLConstants.h>
-#import <MetaWear/MBLAccelerometerData.h>
-#import <MetaWear/MBLOrientationData.h>
-#import <MetaWear/MBLEvent.h>
-#import <MetaWear/MBLModule.h>
+#import "MBLConstants.h"
+#import "MBLAccelerometerData.h"
+#import "MBLOrientationData.h"
+#import "MBLEvent.h"
+#import "MBLModule.h"
 
 /**
  Accelerometer axis

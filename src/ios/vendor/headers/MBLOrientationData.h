@@ -33,7 +33,7 @@
  * contact MbientLab via email: hello@mbientlab.com
  */
 
-#import <MetaWear/MBLDataSample.h>
+#import "MBLDataSample.h"
 
 typedef NS_ENUM(uint8_t, MBLAccelerometerOrientation) {
     MBLAccelerometerOrientationPortrait = 0,

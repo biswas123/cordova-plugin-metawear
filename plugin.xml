@@ -43,8 +43,19 @@
     <header-file src='src/ios/vendor/headers/MBLConstants.h'/>
     <header-file src='src/ios/vendor/headers/MBLMetaWear.h'/>
     <header-file src='src/ios/vendor/headers/MBLMetaWearManager.h'/>
+    <header-file src='src/ios/vendor/headers/MBLAccelerometer.h'/>
+    <header-file src='src/ios/vendor/headers/MBLAccelerometerData.h'/>
+    <header-file src='src/ios/vendor/headers/MBLOrientationData.h'/>
+    <header-file src='src/ios/vendor/headers/MBLDataSample.h'/>
+    <header-file src='src/ios/vendor/headers/MBLEvent.h'/>
+    <header-file src='src/ios/vendor/headers/MBLRegister.h'/>
+    <header-file src='src/ios/vendor/headers/MBLModule.h'/>
     <header-file src='src/ios/MWDevice.h'/>
     <source-file src='src/ios/MWDevice.m'/>
+    <header-file src='src/ios/RSSI.h'/>
+    <source-file src='src/ios/RSSI.m'/>
+    <header-file src='src/ios/MWAccelerometer.h'/>
+    <source-file src='src/ios/MWAccelerometer.m'/>
     <config-file target="config.xml" parent="/*">
       <feature name='MWDevice'>
         <param name='ios-package' value='MWDevice'/>

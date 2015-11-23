@@ -33,7 +33,7 @@
  * contact MbientLab via email: hello@mbientlab.com
  */
 
-#import <MetaWear/MBLDataSample.h>
+#import "MBLDataSample.h"
 
 /**
  Container for a single accelerometer sensor reading
