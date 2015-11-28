@@ -36,6 +36,7 @@
     <source-file src='src/android/RSSI.java' target-dir='src/com/mbientlab/metawear/cordova'/>
     <source-file src='src/android/MWAccelerometer.java' target-dir='src/com/mbientlab/metawear/cordova'/>
     <source-file src='src/android/BluetoothScanner.java' target-dir='src/com/mbientlab/metawear/cordova'/>
+    <source-file src='src/android/GpioModule.java' target-dir='src/com/mbientlab/metawear/cordova'/>
   </platform>
   <platform name='ios'>
     <framework src='Foundation.framework' autogen='true'/>

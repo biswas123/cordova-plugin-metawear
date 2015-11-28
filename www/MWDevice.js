@@ -42,3 +42,17 @@ module.exports.stopAccelerometer = function(){
     console.log("MWDevice.js: stopAccelerometer");
     exec(null, null, "MWDevice", 'stopAccelerometer', []);
 }
+
+module.exports.gpioReadAnalogIn = function(pin, success, failure, pullup, readMode){
+    console.log("MWDevice.js: gpioReadAnalogIn");
+    if(pullup === undefined){
+        pullup = null;
+    }
+    if(readMode === undefined){
+        readMode = null;
+    }
+    console.log(pullup);
+    console.log(readMode);
+    exec(success, failure, "MWDevice", 'gpioReadAnalogIn', [Number(pin),pullup,readMode]);
+}
+

@@ -3,6 +3,11 @@ Cordova Plugin
 
 Cordova plugin for the MetaWear API.  This is currently a work in progress.  The API is very fluid and breaking changes are likely until things are a bit more feature complete.
 
+##Supported Sensors
+*Accelerometer
+*GPIO Pins
+*RSSI
+
 ##Getting Started:
 
 Create your Cordova project
@@ -103,3 +108,24 @@ Stops the accelerometer and stops streaming data.
 ```Javascript
 mbientlab.mwdevice.stopAccelerometer();
 ```
+
+##Roadmap
+
+Right now the following components are on the roadmap for this plugin.  The plan is to add  these in this order,  but if there is specific functionality that you need please file an issue and we can see about moving it up on the list.
+
+*LED
+*BMI 160 Accelerometer
+*BMI 160 Gyro
+*BMP 280 Barometer-Pressure Sensor
+*Haptic
+*I2C
+*MMA 8452Q Accelerometer -  Axis Sampling
+*MultiChannel Temperature
+*NeoPixel
+*Logging
+*Data Processor -
+**accumulator
+**RMS
+**threshold
+**counter
+
