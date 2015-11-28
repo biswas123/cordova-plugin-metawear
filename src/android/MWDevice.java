@@ -30,6 +30,8 @@ import com.mbientlab.metawear.data.CartesianFloat;
 import com.mbientlab.metawear.module.Accelerometer;
 import com.mbientlab.metawear.Message;
 import com.mbientlab.metawear.UnsupportedModuleException;
+import com.mbientlab.metawear.module.Gpio.AnalogReadMode;
+import com.mbientlab.metawear.module.Gpio.PullMode;
 
 /**
  *
@@ -50,8 +52,10 @@ public class MWDevice extends CordovaPlugin implements ServiceConnection{
     public static final String READ_RSSI = "readRssi";
     public static final String START_ACCELEROMETER = "startAccelerometer";
     public static final String STOP_ACCELEROMETER = "stopAccelerometer";
+    public static final String GPIO_READ_ANALOG = "gpioReadAnalogIn";
+    public static final String GPIO_READ_DIGITAL = "gpioReadDigitalIn";
     private MetaWearBleService.LocalBinder serviceBinder;
-    private CallbackContext callbackContext;
+
     private String mwMacAddress;
     private MetaWearBoard mwBoard;
     private HashMap<String, CallbackContext> mwCallbackContexts;
@@ -59,6 +63,7 @@ public class MWDevice extends CordovaPlugin implements ServiceConnection{
     private RSSI rssi;
     private MWAccelerometer mwAccelerometer;
     private BluetoothScanner bluetoothScanner;
+    private GpioModule gpioModule;
     
     /**
      * Constructor.
@@ -75,6 +80,7 @@ public class MWDevice extends CordovaPlugin implements ServiceConnection{
         super.initialize(cordova, webView);
         rssi = new RSSI(this);
         mwAccelerometer = new MWAccelerometer(this);
+        gpioModule = new GpioModule(this);
         mwCallbackContexts = new HashMap<String, CallbackContext>(); 
         bluetoothScanner = new BluetoothScanner(this);
         Context applicationContext = cordova.getActivity().getApplicationContext();
@@ -95,7 +101,6 @@ public class MWDevice extends CordovaPlugin implements ServiceConnection{
     }
 
     public boolean execute(final String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
-        this.callbackContext = callbackContext;
         final int duration = Toast.LENGTH_SHORT;
         // Shows a toast
         Log.v(TAG,"mwDevice received:"+ action);
@@ -128,6 +133,28 @@ public class MWDevice extends CordovaPlugin implements ServiceConnection{
             return true;
         } else if(action.equals(STOP_ACCELEROMETER)){
             mwAccelerometer.stopAccelerometer();
+            return true;
+        } else if(action.equals(GPIO_READ_ANALOG)){
+            int pin = (Integer) args.get(0);
+            AnalogReadMode analogReadMode = AnalogReadMode.ADC;
+            String passedInAnalogReadMode = (String) args.get(2);
+            
+            if((passedInAnalogReadMode != null) &&
+               (passedInAnalogReadMode.equals("ABS_REFERENCE"))){
+                analogReadMode = AnalogReadMode.ABS_REFERENCE;
+            }
+            PullMode pullMode = PullMode.NO_PULL;
+            String passedInPullMode = (String) args.get(1);
+            if(passedInPullMode != null){
+                if(passedInPullMode.equals("PULL_UP")){
+                    pullMode = PullMode.PULL_UP;
+                }else if (passedInPullMode.equals("PULL_DOWN")){
+                    pullMode = PullMode.PULL_DOWN;
+                }
+            }
+            String pinString = String.valueOf(pin);
+            mwCallbackContexts.put(GPIO_READ_ANALOG + pinString, callbackContext);
+            gpioModule.readAnalogIn(pin, pullMode, analogReadMode);
             return true;
         }
         else{
