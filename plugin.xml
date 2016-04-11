@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<plugin xmlns='http://apache.org/cordova/ns/plugins/1.0' xmlns:android='http://schemas.android.com/apk/res/android' id='com.mbientlab.metawear' version='0.2.14'>
+<plugin xmlns='http://apache.org/cordova/ns/plugins/1.0' xmlns:android='http://schemas.android.com/apk/res/android' id='com.mbientlab.metawear' version='0.2.15'>
   <name>
     MetaWear
   </name>
@@ -51,7 +51,23 @@
     <header-file src='src/ios/vendor/headers/MBLEvent.h'/>
     <header-file src='src/ios/vendor/headers/MBLRegister.h'/>
     <header-file src='src/ios/vendor/headers/MBLModule.h'/>
+    <header-file src='src/ios/vendor/headers/Bolts/Bolts.h'/>
+    <header-file src='src/ios/vendor/headers/Bolts/BoltsVersion.h'/>
+    <header-file src='src/ios/vendor/headers/Bolts/BFCancellationToken.h'/>
+    <header-file src='src/ios/vendor/headers/Bolts/BFCancellationTokenRegistration.h'/>
+    <header-file src='src/ios/vendor/headers/Bolts/BFCancellationTokenSource.h'/>
+    <header-file src='src/ios/vendor/headers/Bolts/BFExecutor.h'/>
+    <header-file src='src/ios/vendor/headers/Bolts/BFTask.h'/>
+    <header-file src='src/ios/vendor/headers/Bolts/BFTaskCompletionSource.h'/>
+    <source-file src='src/ios/vendor/headers/Bolts/Bolts.m'/>
+    <source-file src='src/ios/vendor/headers/Bolts/BFCancellationToken.m'/>
+    <source-file src='src/ios/vendor/headers/Bolts/BFCancellationTokenRegistration.m'/>
+    <source-file src='src/ios/vendor/headers/Bolts/BFCancellationTokenSource.m'/>
+    <source-file src='src/ios/vendor/headers/Bolts/BFExecutor.m'/>
+    <source-file src='src/ios/vendor/headers/Bolts/BFTask.m'/>
+    <source-file src='src/ios/vendor/headers/Bolts/BFTaskCompletionSource.m'/>
     <header-file src='src/ios/MWDevice.h'/>
+    <framework src="CoreData.framework"/>
     <source-file src='src/ios/MWDevice.m'/>
     <header-file src='src/ios/RSSI.h'/>
     <source-file src='src/ios/RSSI.m'/>

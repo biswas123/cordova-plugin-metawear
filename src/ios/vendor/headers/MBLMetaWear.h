@@ -49,23 +49,17 @@
 @class MBLANCS;
 @class MBLI2C;
 @class MBLTimer;
-@class MBLGSR;
+@class MBLConductance;
 @class MBLBarometer;
 @class MBLAmbientLight;
+@class MBLMagnetometer;
+@class MBLHygrometer;
+@class MBLPhotometer;
+@class MBLProximity;
+@class MBLSettings;
+@class MBLMetaWear;
 
-/**
- BLE transmiter power
- */
-typedef NS_ENUM(uint8_t, MBLTransmitPower) {
-    MBLTransmitPower4dBm,
-    MBLTransmitPower0dBm,
-    MBLTransmitPowerMinus4dBm,
-    MBLTransmitPowerMinus8dBm,
-    MBLTransmitPowerMinus12dBm,
-    MBLTransmitPowerMinus16dBm,
-    MBLTransmitPowerMinus20dBm,
-    MBLTransmitPowerMinus30dBm
-};
+NS_ASSUME_NONNULL_BEGIN
 
 /**
  Current state of the MetaWear connection
@@ -78,20 +72,26 @@ typedef NS_ENUM(NSInteger, MBLConnectionState) {
     MBLConnectionStateDiscovery,
 };
 
-@class MBLMetaWear;
 
 /**
  An MBLRestorable object is used to persist state across resets and disconnects.
- You create an object that conforms to this protocol and then assing it to an
+ You create an object that conforms to this protocol and then assign it to an
  MBLMetaWear object using the setConfiguration:handler: method
  */
-@protocol MBLRestorable <NSObject, NSCoding>
+@protocol MBLRestorable <NSObject>
 /**
+ This function is called shortly after you assign this object to a MetaWear device.
+ Override this function and use it as the main initialization point for setting up
+ custom events needed for your application.
+ 
  Any API calls in this method will be persisted in non-volatile memory on the
- MetaWear, so upon power cycle it will setup the device with whatever you want automatically
+ MetaWear, and be executed when the MetaWear powers on.  For example, if you want
+ the device to automatically (after reset or power-loss) startLoggingAsync some 
+ event, set the peripheral name, or modifiy a connection parameter, do that in this function.
  */
-- (void)runOnDeviceBoot:(nonnull MBLMetaWear *)device;
+- (void)runOnDeviceBoot:(MBLMetaWear *)device;
 @end
+
 
 
 /**
@@ -103,7 +103,7 @@ typedef NS_ENUM(NSInteger, MBLConnectionState) {
  here via properties.  For example, all accelerometer functionality is contained in the 
  MBLAccelerometer class and is accessed using the accelerometer property
  */
-@interface MBLMetaWear : NSObject <CBPeripheralDelegate, NSCoding>
+@interface MBLMetaWear : NSObject <CBPeripheralDelegate>
 
 ///----------------------------------
 /// @name Sensor and Peripheral Accessors
@@ -158,9 +158,9 @@ typedef NS_ENUM(NSInteger, MBLConnectionState) {
  */
 @property (nonatomic, readonly, nullable) MBLI2C *i2c;
 /**
- MBLGSR object contains all methods for perfoming GSR reads
+ MBLConductance object contains all methods for perfoming Conductance reads
  */
-@property (nonatomic, readonly, nullable) MBLGSR *gsr;
+@property (nonatomic, readonly, nullable) MBLConductance *conductance;
 /**
  MBLBarometer object contains all methods for interacting with the barometer sensor
  */
@@ -169,6 +169,26 @@ typedef NS_ENUM(NSInteger, MBLConnectionState) {
  MBLAmbientLight object contains all methods for interacting with the ambient light sensor
  */
 @property (nonatomic, readonly, nullable) MBLAmbientLight *ambientLight;
+/**
+ MBLMagnetometer object contains all methods for interacting with the magnetometer sensor
+ */
+@property (nonatomic, readonly, nullable) MBLMagnetometer *magnetometer;
+/**
+ MBLHygrometer object contains all methods for interacting with the humidity sensor
+ */
+@property (nonatomic, readonly, nullable) MBLHygrometer *hygrometer;
+/**
+ MBLPhotometer object contains all methods for interacting with the photometer (color) sensor
+ */
+@property (nonatomic, readonly, nullable) MBLPhotometer *photometer;
+/**
+ MBLProximity object contains all methods for interacting with the proximity sensor
+ */
+@property (nonatomic, readonly, nullable) MBLProximity *proximity;
+/**
+ MBLSettings object contains all methods for interacting with MetaWear device settings
+ */
+@property (nonatomic, readonly, nullable) MBLSettings *settings;
 /**
  MBLDeviceInfo object contains version information about the device
  */
@@ -180,18 +200,18 @@ typedef NS_ENUM(NSInteger, MBLConnectionState) {
 ///----------------------------------
 
 /**
- MBLRestorable object containing custom settings and events that are programmed to 
- the MetaWear and preserved even after reset or power failure.
+ MBLRestorable object containing custom settings and events that are programmed
+ to the MetaWear and preserved between disconnects and app termination.
  */
 @property (nonatomic, readonly, nullable) id<MBLRestorable> configuration;
 
 /**
- Program MetaWear with persistance settings.  This only needs to be called once, likely 
- after you confirm the device from a scanning screen or such.  Upon calling it will
+ Assign a new configuration object to this MetaWear.  This only needs to be called once,
+ likely after you confirm the device from a scanning screen or such.  Upon calling it will
  erase all non-volatile memory the device (which requires disconnect), then perform reset, 
- then once its comes back online we will connect and invoke the runOnDeviceBoot method.
- These settings will be persisted device side so after any future reset these settings
- will be applied automatically.
+ once its comes back online we will connect and invoke the setupEvents method.
+ Then the runOnDeviceBoot method is invoked and all calls in that method are persisted 
+ device side so after any future reset these settings will be applied automatically.
  @param configuration Pointer to object containing programming commands.  Writing nil
  will reset to factory settings.
  @param handler Callback once programming is complete
@@ -207,46 +227,28 @@ typedef NS_ENUM(NSInteger, MBLConnectionState) {
  */
 @property (nonatomic, readonly) MBLConnectionState state;
 /**
- iOS generated unique identifier for this MetaWear
+ If YES, then WARNING, this is not the owning application and you can cause 
+ data loss for the other application that is using the device.
  */
-@property (nonatomic, readonly, nonnull) NSUUID *identifier;
+@property (nonatomic, readonly) BOOL isGuestConnection;
+/**
+ iOS generated unique identifier for this MetaWear.  This is device specific and
+ two different iOS devices with generate two different identifiers.
+ */
+@property (nonatomic, readonly) NSUUID *identifier;
 /**
  Stored value of signal strength at discovery time
  */
-@property (nonatomic, nullable) NSNumber *discoveryTimeRSSI;
+@property (nonatomic, readonly, nullable) NSNumber *discoveryTimeRSSI;
 /**
- Advertised device name, max 8 characters
+ Smoothed out RSSI value, great for use with signal strength icons
  */
-@property (nonatomic, nonnull) NSString *name;
+@property (nonatomic, readonly, nullable) NSNumber *averageRSSI;
 /**
- Advertising interval in ms
+ Advertised device name.  You can simply assign a new string
+ if you wish to change the advertised name, max 8 characters!
  */
-@property (nonatomic) uint16_t advertisingInterval;
-/**
- Bluetooth radio transmit power.  Setting a smaller (lower dBm) value will
- result in a smaller connection radius, default is MBLTransmitPower0dBm.
- */
-@property (nonatomic) MBLTransmitPower transmitPower;
-/**
- Set a raw value into the scan response BLE advertising packet
- */
-@property (nonatomic, nullable) NSData *scanResponse;
-
-///----------------------------------
-/// @name Pairing/Bonding
-///----------------------------------
-
-/**
- Start the pairing process which creates a persistent bond between the 
- MetaWear and iOS device
- */
-- (void)initiatePairing;
-/**
- Removes all bonding information stored on the MetaWear.  Note, to delete
- bonding information on the iOS device you must go to Settings -> Bluetooth
- choose the device you want to remove and select "Forget This Device"
- */
-- (void)deleteAllBonds;
+@property (nonatomic) NSString *name;
 
 ///----------------------------------
 /// @name Connect/Disconnect
@@ -290,6 +292,17 @@ typedef NS_ENUM(NSInteger, MBLConnectionState) {
  */
 - (void)forgetDevice;
 
+/**
+ The state of all MetaWear modules are persisted to disk for ease of use
+ across application launches.  Most of the time you don't need to explicitly
+ call this function as it is called automatically after interactions with the 
+ board.  Function that count as interacation include start/stopLogging,
+ start/stopNotificationsAsync, program/eraseCommands.  If you make changes to various
+ module setting but don't call one of these functions, then it may be usefully 
+ to call this function so you don't lose the state of those setting changes.
+ */
+- (void)synchronize;
+
 ///----------------------------------
 /// @name State Reading
 ///----------------------------------
@@ -298,19 +311,20 @@ typedef NS_ENUM(NSInteger, MBLConnectionState) {
  Query the current RSSI
  @param handler Callback once RSSI reading is complete
  */
-- (void)readRSSIWithHandler:(nonnull MBLNumberHandler)handler;
+- (void)readRSSIWithHandler:(MBLNumberHandler)handler;
 /**
  Query the percent remaining battery life, returns int between 0-100
  @param handler Callback once battery life reading is complete
  */
-- (void)readBatteryLifeWithHandler:(nonnull MBLNumberHandler)handler;
+- (void)readBatteryLifeWithHandler:(MBLNumberHandler)handler;
 
 ///----------------------------------
 /// @name Firmware Update and Reset
 ///----------------------------------
 
 /**
- Perform a software reset of the device
+ Perform a software reset of the device.  Note that all module properties of
+ this object will be invalidated, so remove any external references to them.
  @warning This will cause the device to disconnect
  */
 - (void)resetDevice;
@@ -319,7 +333,7 @@ typedef NS_ENUM(NSInteger, MBLConnectionState) {
  See if this device is running the most up to date firmware
  @param handler Callback once current firmware version is checked against the latest
  */
-- (void)checkForFirmwareUpdateWithHandler:(nonnull MBLBoolHandler)handler;
+- (void)checkForFirmwareUpdateWithHandler:(MBLBoolHandler)handler;
 
 /**
  Updates the device to the latest firmware, or re-installs the latest firmware.
@@ -330,30 +344,27 @@ typedef NS_ENUM(NSInteger, MBLConnectionState) {
  seconds while we wait for the device to install the firmware and reboot.  After
  the reboot, handler will be called and passed an NSError object if the update
  failed or nil if the update was successful.
+ 
+ This is one API you can call WITHOUT being connected, there are some cases where
+ you can't connect because the firmware is too old, but you still need to be able
+ to update it!
  @param handler Callback once update is complete
  @param progressHandler Periodically called while firmware upload is in progress
  */
-- (void)updateFirmwareWithHandler:(nonnull MBLErrorHandler)handler
+- (void)updateFirmwareWithHandler:(MBLErrorHandler)handler
                   progressHandler:(nullable MBLFloatHandler)progressHandler;
 
 
 ///----------------------------------
-/// @name Deprecated Methods
+/// @name Debug and Testing Utilities
 ///----------------------------------
 
-/**
- * @deprecated use setConfiguration:handler: instead
+/*
+ This causues the device to immediately disconnect with an error.  Useful for testing
+ error handling flows.
  */
-- (nullable MBLEvent *)retrieveEventWithIdentifier:(nonnull NSString *)identifier DEPRECATED_MSG_ATTRIBUTE("Use setConfiguration:handler: instead");
-
-/**
- * @deprecated use deviceInfo property instead
- */
-- (void)readDeviceInfoWithHandler:(nonnull MBLDeviceInfoHandler)handler DEPRECATED_MSG_ATTRIBUTE("Use deviceInfo property instead");
-
-/**
- * @deprecated Use connectWithHandler: instead
- */
-- (void)connecWithHandler:(nullable MBLErrorHandler)handler DEPRECATED_MSG_ATTRIBUTE("Use connectWithHandler: instead");
+- (void)simulateDisconnect;
 
 @end
+
+NS_ASSUME_NONNULL_END

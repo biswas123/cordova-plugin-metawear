@@ -18,7 +18,7 @@
 - (void)startAccelerometer:(CDVInvokedUrlCommand*)command
 {
   NSLog(@"startAccelerometer called");
-  [mwDevice.connectedDevice.accelerometer.dataReadyEvent startNotificationsWithHandler:^(MBLAccelerometerData *accelerometerData, NSError *error){
+  [mwDevice.connectedDevice.accelerometer.dataReadyEvent startNotificationsWithHandlerAsync:^(MBLAccelerometerData *accelerometerData, NSError *error){
       CDVPluginResult* pluginResult = nil;
       NSLog(@"Accelerometer callback %@", accelerometerData);
       NSMutableDictionary *accelerometerReading = [NSMutableDictionary dictionaryWithDictionary:@{}];
@@ -36,7 +36,7 @@
 - (void)stopAccelerometer:(CDVInvokedUrlCommand*)command
 {
   NSLog(@"stopAccelerometer called");
-  [mwDevice.connectedDevice.accelerometer.dataReadyEvent stopNotifications];
+  [mwDevice.connectedDevice.accelerometer.dataReadyEvent stopNotificationsAsync];
   CDVPluginResult* pluginResult = nil;
   pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"ACCELEROMETER_STOPPED"];
 

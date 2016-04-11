@@ -36,19 +36,25 @@
 #import <MetaWear/MBLConstants.h>
 #import <MetaWear/MBLEvent.h>
 #import <MetaWear/MBLModule.h>
+@class MBLNumericData;
+
+NS_ASSUME_NONNULL_BEGIN
 
 /**
  Interface to an abstract ambient light sensor. If you need more advanced
  features then upcast to the specific sensor on your board, MBLAmbientLightLTR329.
  @see MBLAmbientLightLTR329
  */
-@interface MBLAmbientLight : MBLModule <NSCoding>
+@interface MBLAmbientLight : MBLModule
 
 /**
  Data representing the intensity of visible light present.
  Event callbacks will be provided an MBLNumericData object whose
- float value will be illuminance in lux.
+ double value will be illuminance in lux.
+ NOT YET IMPLEMENTED
  */
-@property (nonatomic, readonly, nonnull) MBLData *illuminance;
+@property (nonatomic, readonly, nullable) MBLData<MBLNumericData *> *illuminance;
 
 @end
+
+NS_ASSUME_NONNULL_END
