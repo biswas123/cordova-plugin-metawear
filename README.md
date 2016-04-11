@@ -35,7 +35,7 @@ Currently the project supports the following functions:
 * Reading the RSSI for the device.
 * Streaming accelerometer data.
 
-Currently only Android is supported,  but IOS is on the roadmap.
+This module currently support IOS and Android.  If you would like to see support for other platforms please open an issue.
 
 Methods are called from the metawear.mwdevice object.  Callbacks take the form of
 

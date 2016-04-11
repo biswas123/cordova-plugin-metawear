@@ -36,45 +36,29 @@
 #import <MetaWear/MBLConstants.h>
 #import <MetaWear/MBLEvent.h>
 #import <MetaWear/MBLModule.h>
+@class MBLNumericData;
+
+NS_ASSUME_NONNULL_BEGIN
 
 /**
  Interface to on-board switch (pushbutton)
  */
-@interface MBLMechanicalSwitch : MBLModule <NSCoding>
+@interface MBLMechanicalSwitch : MBLModule
 
 /**
  Data representing the current state of the switch.
  Event callbacks will be provided an MBLNumericData object, where a bool value of
  YES means pressed, and NO means released.
  */
-@property (nonatomic, readonly, nonnull) MBLData *switchValue;
+@property (nonatomic, readonly) MBLData<MBLNumericData *> *switchValue;
 
 /**
  Event representing a change in the push button state (pressed/depressed).
  Event callbacks will be provided an MBLNumericData object, where a bool value of
  YES means pressed, and NO means released.
  */
-@property (nonatomic, readonly, nonnull) MBLEvent *switchUpdateEvent;
+@property (nonatomic, readonly) MBLEvent<MBLNumericData *> *switchUpdateEvent;
 
-
-///----------------------------------
-/// @name Deprecated Methods
-///----------------------------------
-
-/**
- * @deprecated use [switchValue readWithHandler:] instead
- * @see [switchValue readWithHandler:]
- */
-- (void)readSwitchStateWithHandler:(nonnull MBLSwitchStateHandler)handler DEPRECATED_MSG_ATTRIBUTE("Use [switchValue readWithHandler:] instead");
-
-/**
- * @deprecated use [switchUpdateEvent startNotificationsWithHandler] instead
- * @see [switchUpdateEvent startNotificationsWithHandler]
- */
-- (void)startSwitchUpdatesWithHandler:(nonnull MBLSwitchStateHandler)handler DEPRECATED_MSG_ATTRIBUTE("Use [switchUpdateEvent startNotificationsWithHandler] instead");
-/**
- * @deprecated use [switchUpdateEvent stopNotifications] instead
- * @see [switchUpdateEvent stopNotifications]
- */
-- (void)stopSwitchUpdates DEPRECATED_MSG_ATTRIBUTE("Use [switchUpdateEvent stopNotifications] instead");
 @end
+
+NS_ASSUME_NONNULL_END

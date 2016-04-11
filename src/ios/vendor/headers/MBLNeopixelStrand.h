@@ -35,18 +35,35 @@
 
 #import <MetaWear/MBLNeopixel.h>
 #import <UIKit/UIKit.h>
+#import <Bolts/Bolts.h>
+
+
+NS_ASSUME_NONNULL_BEGIN
 
 /**
  Interface to a strand of NeoPixels
  */
-@interface MBLNeopixelStrand : NSObject <NSCoding>
+@interface MBLNeopixelStrand : NSObject
+
+/**
+ Initialize the strand, this must be called before invoking any other
+ commands on the strand.  This should only be call once when the strand
+ is created.
+ */
+- (BFTask *)initializeAsync;
+/**
+ Deinitialize the strand, this should only be call once right before
+ you are ready to drop all references to this object.  This should
+ NOT be used to turn if off temporarily, for that use clearAllPixels.
+ */
+- (BFTask *)deinitializeAsync;
 
 /**
  Set Pixel at strand index.
  @param pixel Pixel index to be set
  @param color Color the LED will be set to
  */
-- (void)setPixel:(uint8_t)pixel color:(nonnull UIColor *)color;
+- (BFTask *)setPixelAsync:(uint8_t)pixel color:(UIColor *)color;
 
 /**
  This sets each pixel in the strand so that it looks like a rainbow.
@@ -55,20 +72,24 @@
  it instantly takes the rainbow colors, if NO then you will see each
  pixel update individually
  */
-- (void)setRainbowWithHold:(BOOL)hold;
+- (BFTask *)setRainbowWithHoldAsync:(BOOL)hold;
 
 /**
  Clear Neopixel strand.
  @param start Pixel index to start clearing from
  @param end Pixel index to clear to, inclusive
  */
-- (void)clearFromStartPixel:(uint8_t)startPixel endPixel:(uint8_t)endPixel;
+- (BFTask *)clearFromStartPixelAsync:(uint8_t)startPixel endPixel:(uint8_t)endPixel;
+/**
+ Clear all neopixel pixels in the strand
+ */
+- (BFTask *)clearAllPixelsAsync;
 
 /**
  Hold Neopixel strand.
  @param enable Hold enable
  */
-- (void)holdStrandWithEnable:(BOOL)enable;
+- (BFTask *)holdStrandWithEnableAsync:(BOOL)enable;
 
 /**
  Rotate strand at index.
@@ -77,11 +98,8 @@
  @param repetitions Number of times to repeat the rotation. Use 0xFF to rotate indefinitely, 0 to terminate
  @param period Amount of time, in milliseconds, between rotations
  */
-- (void)rotateStrandWithDirection:(MBLRotationDirection)direction repetitions:(uint8_t)repetitions period:(uint16_t)period;
-
-/**
- Clears all pixels and puts strand into low power state
- */
-- (void)turnStrandOff;
+- (BFTask *)rotateStrandWithDirectionAsync:(MBLRotationDirection)direction repetitions:(uint8_t)repetitions period:(uint16_t)period;
 
 @end
+
+NS_ASSUME_NONNULL_END

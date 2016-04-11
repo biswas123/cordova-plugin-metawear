@@ -35,6 +35,9 @@
 
 #import <MetaWear/MBLConstants.h>
 #import <MetaWear/MBLModule.h>
+#import <Bolts/Bolts.h>
+
+NS_ASSUME_NONNULL_BEGIN
 
 /**
  iBeacon transmiter power
@@ -54,7 +57,7 @@ typedef NS_ENUM(uint8_t, MBLiBeaconTransmitPower) {
 /**
  Interface to program the device to advertise as an iBeacon
  */
-@interface MBLiBeacon : MBLModule <NSCoding>
+@interface MBLiBeacon : MBLModule
 
 /**
  The iBeacon UUID being broadcast, the default is the MetaWear Service UUID
@@ -72,7 +75,7 @@ typedef NS_ENUM(uint8_t, MBLiBeaconTransmitPower) {
 /**
  Calibrated RX power in dBm. This represents the approximate RSSI value seen 
  by the reciever when 1 meter away from the iBeacon, default is -55 dBm.
- Valid range is [-10, -127].
+ Valid range is [-10, -128].
  */
 @property (nonatomic) int8_t calibratedReceiverPower;
 /**
@@ -95,20 +98,8 @@ typedef NS_ENUM(uint8_t, MBLiBeaconTransmitPower) {
  @warning The beacon will only be visible after you disconnect
  @param on YES turns iBeacon on, NO, turns iBeacon off
  */
-- (void)setBeaconOn:(BOOL)on;
-
-
-///----------------------------------
-/// @name Deprecated Properties
-///----------------------------------
-
-/**
- * @deprecated use calibratedReceiverPower instead
- */
-@property (nonatomic) uint8_t powerRX DEPRECATED_MSG_ATTRIBUTE("Use calibratedReceiverPower instead");
-/**
- * @deprecated use transmitPower instead
- */
-@property (nonatomic) uint8_t powerTX DEPRECATED_MSG_ATTRIBUTE("Use transmitPower instead");
+- (BFTask *)setBeaconOnAsync:(BOOL)on;
 
 @end
+
+NS_ASSUME_NONNULL_END
