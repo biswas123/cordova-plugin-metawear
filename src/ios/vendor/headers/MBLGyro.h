@@ -33,8 +33,8 @@
  * contact MbientLab via email: hello@mbientlab.com
  */
 
-#import <MetaWear/MBLModule.h>
-#import <MetaWear/MBLEvent.h>
+#import "MBLModule.h"
+#import "MBLEvent.h"
 @class MBLGyroData;
 @class MBLNumericData;
 

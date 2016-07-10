@@ -56,3 +56,12 @@ module.exports.gpioReadAnalogIn = function(pin, success, failure, pullup, readMo
     exec(success, failure, "MWDevice", 'gpioReadAnalogIn', [Number(pin),pullup,readMode]);
 }
 
+module.exports.startGyroscope = function(success, failure){
+    console.log("MWDevice.js: start Gyroscope");
+    exec(success, failure, "MWDevice", 'startGyroscope', []);
+}
+
+module.exports.stopGyroscope = function(){
+    console.log("MWDevice.js: stopGyroscope");
+    exec(null, null, "MWDevice", 'stopGyroscope', []);
+}

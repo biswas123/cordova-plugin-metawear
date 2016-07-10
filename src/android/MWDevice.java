@@ -52,6 +52,8 @@ public class MWDevice extends CordovaPlugin implements ServiceConnection{
     public static final String READ_RSSI = "readRssi";
     public static final String START_ACCELEROMETER = "startAccelerometer";
     public static final String STOP_ACCELEROMETER = "stopAccelerometer";
+    public static final String START_GYROSCOPE = "startGyroscope";
+    public static final String STOP_GYROSCOPE = "stopGyroscope";
     public static final String GPIO_READ_ANALOG = "gpioReadAnalogIn";
     public static final String GPIO_READ_DIGITAL = "gpioReadDigitalIn";
     private MetaWearBleService.LocalBinder serviceBinder;
@@ -62,6 +64,7 @@ public class MWDevice extends CordovaPlugin implements ServiceConnection{
     private boolean initialized = false;
     private RSSI rssi;
     private MWAccelerometer mwAccelerometer;
+    private MWGyroscope mwGyroscope;
     private BluetoothScanner bluetoothScanner;
     private GpioModule gpioModule;
     
@@ -80,6 +83,7 @@ public class MWDevice extends CordovaPlugin implements ServiceConnection{
         super.initialize(cordova, webView);
         rssi = new RSSI(this);
         mwAccelerometer = new MWAccelerometer(this);
+        mwGyroscope = new MWGyroscope(this);
         gpioModule = new GpioModule(this);
         mwCallbackContexts = new HashMap<String, CallbackContext>(); 
         bluetoothScanner = new BluetoothScanner(this);
@@ -133,6 +137,13 @@ public class MWDevice extends CordovaPlugin implements ServiceConnection{
             return true;
         } else if(action.equals(STOP_ACCELEROMETER)){
             mwAccelerometer.stopAccelerometer();
+            return true;
+        }  else if(action.equals(START_GYROSCOPE)){
+            mwCallbackContexts.put(START_GYROSCOPE, callbackContext);
+            mwGyroscope.startGyroscope();
+            return true;
+        } else if(action.equals(STOP_GYROSCOPE)){
+            mwGyroscope.stopGyroscope();
             return true;
         } else if(action.equals(GPIO_READ_ANALOG)){
             int pin = (Integer) args.get(0);

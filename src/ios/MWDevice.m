@@ -4,12 +4,14 @@
 #import "MBLMetaWear.h"
 #import "MBLMetaWearManager.h"
 #import "MWAccelerometer.h"
+#import "MWGyroscope.h"
 
 
 @implementation MWDevice {
   NSArray *scannedDevices;
   RSSI *rssi;
   MWAccelerometer *accelerometer;
+  MWGyroscope *gyroscope;
 }
 
 - (void)scanForDevices:(CDVInvokedUrlCommand*)command
@@ -116,4 +118,21 @@
   NSLog(@"stop accelerometer on %@", accelerometer);
   [accelerometer stopAccelerometer:command];
 }
+
+- (void)startGyroscope:(CDVInvokedUrlCommand*)command
+{
+  if(gyroscope == nil)
+    {
+      gyroscope = [[MWGyroscope alloc] initWithDevice:self];
+    }
+  NSLog(@"read Gyroscope on %@", gyroscope);
+  [gyroscope startGyroscope:command];
+}
+
+- (void)stopGyroscope:(CDVInvokedUrlCommand*)command
+{
+  NSLog(@"stop accelerometer on %@", gyroscope);
+  [gyroscope stopGyroscope:command];
+}
+
 @end

@@ -35,6 +35,7 @@
     <source-file src='src/android/MWDevice.java' target-dir='src/com/mbientlab/metawear/cordova'/>
     <source-file src='src/android/RSSI.java' target-dir='src/com/mbientlab/metawear/cordova'/>
     <source-file src='src/android/MWAccelerometer.java' target-dir='src/com/mbientlab/metawear/cordova'/>
+    <source-file src='src/android/MWGyroscope.java' target-dir='src/com/mbientlab/metawear/cordova'/>
     <source-file src='src/android/BluetoothScanner.java' target-dir='src/com/mbientlab/metawear/cordova'/>
     <source-file src='src/android/GpioModule.java' target-dir='src/com/mbientlab/metawear/cordova'/>
   </platform>
@@ -46,6 +47,8 @@
     <header-file src='src/ios/vendor/headers/MBLMetaWearManager.h'/>
     <header-file src='src/ios/vendor/headers/MBLAccelerometer.h'/>
     <header-file src='src/ios/vendor/headers/MBLAccelerometerData.h'/>
+    <header-file src='src/ios/vendor/headers/MBLGyro.h'/>
+    <header-file src='src/ios/vendor/headers/MBLGyroData.h'/>
     <header-file src='src/ios/vendor/headers/MBLOrientationData.h'/>
     <header-file src='src/ios/vendor/headers/MBLDataSample.h'/>
     <header-file src='src/ios/vendor/headers/MBLEvent.h'/>
@@ -73,6 +76,8 @@
     <source-file src='src/ios/RSSI.m'/>
     <header-file src='src/ios/MWAccelerometer.h'/>
     <source-file src='src/ios/MWAccelerometer.m'/>
+    <header-file src='src/ios/MWGyroscope.h'/>
+    <source-file src='src/ios/MWGyroscope.m'/>
     <config-file target="config.xml" parent="/*">
       <feature name='MWDevice'>
         <param name='ios-package' value='MWDevice'/>
