@@ -34,6 +34,7 @@
     <framework src='src/android/build-extras.gradle' custom='true' type='gradleReference'/>
     <source-file src='src/android/MWDevice.java' target-dir='src/com/mbientlab/metawear/cordova'/>
     <source-file src='src/android/RSSI.java' target-dir='src/com/mbientlab/metawear/cordova'/>
+    <source-file src='src/android/SupportedModules.java' target-dir='src/com/mbientlab/metawear/cordova'/>
     <source-file src='src/android/MWAccelerometer.java' target-dir='src/com/mbientlab/metawear/cordova'/>
     <source-file src='src/android/MWGyroscope.java' target-dir='src/com/mbientlab/metawear/cordova'/>
     <source-file src='src/android/BluetoothScanner.java' target-dir='src/com/mbientlab/metawear/cordova'/>
@@ -72,6 +73,8 @@
     <header-file src='src/ios/MWDevice.h'/>
     <framework src="CoreData.framework"/>
     <source-file src='src/ios/MWDevice.m'/>
+    <header-file src='src/ios/MWSupportedModules.h'/>
+    <source-file src='src/ios/MWSupportedModules.m'/>
     <header-file src='src/ios/RSSI.h'/>
     <source-file src='src/ios/RSSI.m'/>
     <header-file src='src/ios/MWAccelerometer.h'/>

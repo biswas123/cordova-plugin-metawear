@@ -64,6 +64,15 @@ public class MWGyroscope{
             gyroModule= mwDevice.getMwBoard().getModule(Bmi160Gyro.class);
         }catch(UnsupportedModuleException e){
             Log.e("Metawear Cordova Error: ", e.toString());
+
+            JSONObject resultObject = new JSONObject();
+            try {
+                resultObject.put(MWDevice.STATUS, MWDevice.MODULE_NOT_SUPPORTED);
+                mwDevice.getMwCallbackContexts().get(mwDevice.START_GYROSCOPE).error(resultObject);
+            } catch (JSONException jsonException){
+                Log.e("Metawear Cordova Error: ", jsonException.toString());
+            }
+
         }
         return gyroModule;
     }
@@ -72,15 +81,17 @@ public class MWGyroscope{
         Log.v("MetaWear", " start Gryoscope");
         Bmi160Gyro gyroModule = getGyroscope();
         
-        gyroModule.configure()
-            .setFullScaleRange(Bmi160Gyro.FullScaleRange.FSR_2000)
-            .setOutputDataRate(Bmi160Gyro.OutputDataRate.ODR_100_HZ)
-            .commit();
+        if(gyroModule != null){
+            gyroModule.configure()
+                .setFullScaleRange(Bmi160Gyro.FullScaleRange.FSR_2000)
+                .setOutputDataRate(Bmi160Gyro.OutputDataRate.ODR_100_HZ)
+                .commit();
 
-        gyroModule.routeData()
-            .fromAxes().stream("gyro_stream_key")
-            .commit().onComplete(gyroscopeHandler);
-        gyroModule.start();
+            gyroModule.routeData()
+                .fromAxes().stream("gyro_stream_key")
+                .commit().onComplete(gyroscopeHandler);
+            gyroModule.start();
+        }
     }
 
     public void stopGyroscope(){

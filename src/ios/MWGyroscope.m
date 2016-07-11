@@ -18,19 +18,29 @@
 - (void)startGyroscope:(CDVInvokedUrlCommand*)command
 {
   NSLog(@"startAccelerometer called");
-  [mwDevice.connectedDevice.gyro.dataReadyEvent startNotificationsWithHandlerAsync:^(MBLGyroData *gyroscopeData, NSError *error){
-      CDVPluginResult* pluginResult = nil;
-      NSLog(@"Gyroscope callback %@", gyroscopeData);
-      NSMutableDictionary *gyroscopeReading = [NSMutableDictionary dictionaryWithDictionary:@{}];
-      gyroscopeReading[@"x"] = [NSNumber numberWithFloat:gyroscopeData.x];
-      gyroscopeReading[@"y"] = [NSNumber numberWithFloat:gyroscopeData.y];
-      gyroscopeReading[@"z"] = [NSNumber numberWithFloat:gyroscopeData.z];
-      pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:gyroscopeReading];
-      [pluginResult setKeepCallback:[NSNumber numberWithBool:YES]];
 
-      NSLog(@"Callback id %@", command.callbackId);
-      [mwDevice.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-    }];
+  if(mwDevice.connectedDevice.gyro != nil){
+    [mwDevice.connectedDevice.gyro.dataReadyEvent startNotificationsWithHandlerAsync:^(MBLGyroData *gyroscopeData, NSError *error){
+        NSLog(@"Gyroscope callback %@", gyroscopeData);
+        NSMutableDictionary *gyroscopeReading = [NSMutableDictionary dictionaryWithDictionary:@{}];
+        gyroscopeReading[@"x"] = [NSNumber numberWithFloat:gyroscopeData.x];
+        gyroscopeReading[@"y"] = [NSNumber numberWithFloat:gyroscopeData.y];
+        gyroscopeReading[@"z"] = [NSNumber numberWithFloat:gyroscopeData.z];
+        CDVPluginResult* pluginResult = nil;
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:gyroscopeReading];
+        [pluginResult setKeepCallback:[NSNumber numberWithBool:YES]];
+
+        NSLog(@"Callback id %@", command.callbackId);
+        [mwDevice.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+      }];
+  } else {
+    NSMutableDictionary *gyroscopeError = [NSMutableDictionary dictionaryWithDictionary:@{}];
+    gyroscopeError[@"status"] = @"MODULE_NOT_SUPPORTED";
+    NSLog(@"Gyroscope not supported");
+    CDVPluginResult* pluginResult = nil;
+    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsDictionary:gyroscopeError];
+    [mwDevice.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+  }
 }
 
 - (void)stopGyroscope:(CDVInvokedUrlCommand*)command

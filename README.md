@@ -7,6 +7,7 @@ Cordova plugin for the MetaWear API.  This is currently a work in progress.  The
 *Accelerometer
 *GPIO Pins
 *RSSI
+*Gyroscope
 
 ##Getting Started:
 
@@ -47,22 +48,6 @@ var mycallback = function(result){
 
 ##Supported Methods
 
-###Initialize
-
-Initialize takes a success and failure callback and parameters.  The result value in the callbacks are string values indicating a success or failure of the command.
-
-```Javascript
-var success = function(result){
-  console.log("Initialized with status: " + result);
-}
-
-var failure = function(result){
-  console.log("Initialize Error: " + result);
-}
-
-mbientlab.mwdevice.initialize(success, failure);
-```
-
 ###Connect
 
 Connects to the specified board.  The success callback is also used for disconnect.
@@ -77,6 +62,18 @@ Disconnects from the board.  Sends a disconnect message to the success callback 
 
 ```Javascript
 mbientlab.mwdevice.disconnect();
+```
+
+###supportedModules
+
+Returns a object with the various modules with a true or false value indicating if they are supported on the board you are connected to in the success callback.
+
+```Javascript
+mbientlab.mwdevice.supportedModules(successCallback, failureCallback);
+
+successCallback.gpio //value will be true if supported,  false if not.
+successCallback.accelerometer
+successCallback.gyroscope
 ```
 
 ###readRssi
@@ -110,13 +107,39 @@ Stops the accelerometer and stops streaming data.
 mbientlab.mwdevice.stopAccelerometer();
 ```
 
+###startGyroscope
+
+Starts the gyroscope on the board and streams the data to the callback until it is stopped.  The callback result is an object with x,y and z values from the gyroscope.
+
+```Javascript
+var failure = function(result){
+}
+
+var success = function(result){
+   console.log("x: " + result.x + " y: " + result.y + " z: " + result.z);
+}
+
+mbientlab.mwdevice.startGyroscope(success, failure);
+```
+
+Note:  The failure callback will come back with a result.status of "MODULE_NOT_SUPPORTED" if the board you are connected to does not support this module.
+
+###stopGyroscope
+
+Stops the gyroscope and stops streaming data.
+
+```Javascript
+mbientlab.mwdevice.stopGyroscope();
+```
+
+
 ##Roadmap
 
 Right now the following components are on the roadmap for this plugin.  The plan is to add  these in this order,  but if there is specific functionality that you need please file an issue and we can see about moving it up on the list.
 
 *LED
-*BMI 160 Accelerometer
-*BMI 160 Gyro
+*BMI 160 Accelerometer -- advanced functions
+*BMI 160 Gyro -- advanced functions
 *BMP 280 Barometer-Pressure Sensor
 *Haptic
 *I2C

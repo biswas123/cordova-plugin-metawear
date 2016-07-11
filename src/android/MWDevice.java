@@ -56,12 +56,17 @@ public class MWDevice extends CordovaPlugin implements ServiceConnection{
     public static final String STOP_GYROSCOPE = "stopGyroscope";
     public static final String GPIO_READ_ANALOG = "gpioReadAnalogIn";
     public static final String GPIO_READ_DIGITAL = "gpioReadDigitalIn";
+    public static final String SUPPORTED_MODULES = "supportedModules";
+    public static final String STATUS = "status";
+    public static final String MODULE_NOT_SUPPORTED = "MODULE_NOT_SUPPORTED";
+
     private MetaWearBleService.LocalBinder serviceBinder;
 
     private String mwMacAddress;
     private MetaWearBoard mwBoard;
     private HashMap<String, CallbackContext> mwCallbackContexts;
     private boolean initialized = false;
+    private SupportedModules supportedModules;
     private RSSI rssi;
     private MWAccelerometer mwAccelerometer;
     private MWGyroscope mwGyroscope;
@@ -82,6 +87,7 @@ public class MWDevice extends CordovaPlugin implements ServiceConnection{
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
         super.initialize(cordova, webView);
         rssi = new RSSI(this);
+        supportedModules = new SupportedModules(this);
         mwAccelerometer = new MWAccelerometer(this);
         mwGyroscope = new MWGyroscope(this);
         gpioModule = new GpioModule(this);
@@ -124,8 +130,12 @@ public class MWDevice extends CordovaPlugin implements ServiceConnection{
                 bluetoothScanner.startBleScan();
             }
             return true;
-        }else if(action.equals(DISCONNECT)){
+        } else if(action.equals(DISCONNECT)){
             mwBoard.disconnect();
+            return true;
+        } else if(action.equals(SUPPORTED_MODULES)){
+            mwCallbackContexts.put(SUPPORTED_MODULES, callbackContext);
+            supportedModules.getSupportedModules();
             return true;
         } else if(action.equals(READ_RSSI)){
             mwCallbackContexts.put(READ_RSSI, callbackContext);

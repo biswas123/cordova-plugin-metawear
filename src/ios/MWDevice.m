@@ -5,13 +5,14 @@
 #import "MBLMetaWearManager.h"
 #import "MWAccelerometer.h"
 #import "MWGyroscope.h"
-
+#import "MWSupportedModules.h"
 
 @implementation MWDevice {
   NSArray *scannedDevices;
   RSSI *rssi;
   MWAccelerometer *accelerometer;
   MWGyroscope *gyroscope;
+  MWSupportedModules *supportedModules;
 }
 
 - (void)scanForDevices:(CDVInvokedUrlCommand*)command
@@ -91,6 +92,16 @@
       }
       [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     }];
+}
+
+- (void)supportedModules:(CDVInvokedUrlCommand*)command
+{
+  if(supportedModules == nil)
+    {
+      supportedModules = [[MWSupportedModules alloc] initWithDevice:self];
+    }
+  NSLog(@"read supportedModules on %@", supportedModules);
+  [supportedModules getSupportedModules:command];
 }
 
 - (void)readRssi:(CDVInvokedUrlCommand*)command

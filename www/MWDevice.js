@@ -28,6 +28,11 @@ module.exports.scanForDevices = function(success, failure){
     exec(success, failure, "MWDevice", 'scanForDevices', []);
 }
 
+module.exports.supportedModules = function(success, failure){
+    console.log("MWDevice.js: supportedModules");
+    exec(success, failure, "MWDevice", 'supportedModules', []);
+}
+
 module.exports.readRssi = function(success, failure){
     console.log("MWDevice.js: scanForDevices");
     exec(success, failure, "MWDevice", 'readRssi', []);
