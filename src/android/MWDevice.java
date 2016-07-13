@@ -50,6 +50,7 @@ public class MWDevice extends CordovaPlugin implements ServiceConnection{
     public static final String CONNECT = "connect";
     public static final String DISCONNECT = "disconnect";
     public static final String READ_RSSI = "readRssi";
+    public static final String READ_BATTERY_LEVEL = "readBatteryLevel";
     public static final String START_ACCELEROMETER = "startAccelerometer";
     public static final String STOP_ACCELEROMETER = "stopAccelerometer";
     public static final String START_GYROSCOPE = "startGyroscope";
@@ -68,6 +69,7 @@ public class MWDevice extends CordovaPlugin implements ServiceConnection{
     private boolean initialized = false;
     private SupportedModules supportedModules;
     private RSSI rssi;
+    private BatteryLevel batteryLevel;
     private MWAccelerometer mwAccelerometer;
     private MWGyroscope mwGyroscope;
     private BluetoothScanner bluetoothScanner;
@@ -87,6 +89,7 @@ public class MWDevice extends CordovaPlugin implements ServiceConnection{
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
         super.initialize(cordova, webView);
         rssi = new RSSI(this);
+        batteryLevel = new BatteryLevel(this);
         supportedModules = new SupportedModules(this);
         mwAccelerometer = new MWAccelerometer(this);
         mwGyroscope = new MWGyroscope(this);
@@ -140,6 +143,10 @@ public class MWDevice extends CordovaPlugin implements ServiceConnection{
         } else if(action.equals(READ_RSSI)){
             mwCallbackContexts.put(READ_RSSI, callbackContext);
             rssi.readRssi();
+            return true;
+        } else if(action.equals(READ_BATTERY_LEVEL)){
+            mwCallbackContexts.put(READ_BATTERY_LEVEL, callbackContext);
+            batteryLevel.readBatteryLevel();
             return true;
         } else if(action.equals(START_ACCELEROMETER)){
             mwCallbackContexts.put(START_ACCELEROMETER, callbackContext);

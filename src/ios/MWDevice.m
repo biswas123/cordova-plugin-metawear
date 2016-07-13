@@ -1,5 +1,6 @@
 #import "MWDevice.h"
 #import "RSSI.h"
+#import "BatteryLevel.h"
 #import <Cordova/CDV.h>
 #import "MBLMetaWear.h"
 #import "MBLMetaWearManager.h"
@@ -10,6 +11,7 @@
 @implementation MWDevice {
   NSArray *scannedDevices;
   RSSI *rssi;
+  BatteryLevel *batteryLevel;
   MWAccelerometer *accelerometer;
   MWGyroscope *gyroscope;
   MWSupportedModules *supportedModules;
@@ -112,6 +114,16 @@
     }
   NSLog(@"read RSSI on %@", rssi);
   [rssi readRssi:command];
+}
+
+- (void)readBatteryLevel:(CDVInvokedUrlCommand*)command
+{
+  if(batteryLevel == nil)
+    {
+      batteryLevel = [[BatteryLevel alloc] initWithDevice:self];
+    }
+  NSLog(@"read RSSI on %@", rssi);
+  [batteryLevel readBatteryLevel:command];
 }
 
 - (void)startAccelerometer:(CDVInvokedUrlCommand*)command

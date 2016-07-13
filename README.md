@@ -84,6 +84,14 @@ Reads the RSSI value you are currently getting from the board.  The RSSI is retu
 mbientlab.mwdevice.readRssi(successCallback, failureCallback);
 ```
 
+###readBatteryLevel
+
+Reads the Battery Level value you are currently getting from the board.  The Battery Level is returned as a int in the success callback.
+
+```Javascript
+mbientlab.mwdevice.readBatteryLevel(successCallback, failureCallback);
+```
+
 ###startAccelerometer
 
 Starts the accelerometer on the board and streams the data to the callback until it is stopped.  The callback result is an object with x,y and z values from the accelerometer.

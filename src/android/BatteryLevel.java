@@ -22,13 +22,13 @@ public class BatteryLevel {
         mwDevice = device;
     }
 
-    private final AsyncOperation.CompletionHandler<Integer> readBatteryLevelHandler =
-        new AsyncOperation.CompletionHandler<Integer>() {
+    private final AsyncOperation.CompletionHandler<Byte> readBatteryLevelHandler =
+        new AsyncOperation.CompletionHandler<Byte>() {
             @Override
-            public void success(final Integer result){
+            public void success(final Byte result){
                 Log.i("Metawear Cordova BatteryLevel: ", result.toString());
                 PluginResult pluginResult = new PluginResult(PluginResult.Status.OK,
-                                                             result.toString());
+                                                             result.intValue());
                 mwDevice.getMwCallbackContexts().get(mwDevice.READ_BATTERY_LEVEL).sendPluginResult(pluginResult);
             }
 
@@ -42,7 +42,7 @@ public class BatteryLevel {
         };
         
     public void readBatteryLevel() {
-        AsyncOperation<Integer> result = mwDevice.getMwBoard().readBatteryLevel();
+        AsyncOperation<Byte> result = mwDevice.getMwBoard().readBatteryLevel();
         result.onComplete(readBatteryLevelHandler);
     }
 
