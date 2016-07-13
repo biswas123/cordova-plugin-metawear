@@ -34,8 +34,13 @@ module.exports.supportedModules = function(success, failure){
 }
 
 module.exports.readRssi = function(success, failure){
-    console.log("MWDevice.js: scanForDevices");
+    console.log("MWDevice.js: readRssi");
     exec(success, failure, "MWDevice", 'readRssi', []);
+}
+
+module.exports.readBatteryLevel = function(success, failure){
+    console.log("MWDevice.js: readBatteryLevel");
+    exec(success, failure, "MWDevice", 'readBatteryLevel', []);
 }
 
 module.exports.startAccelerometer = function(success, failure){
