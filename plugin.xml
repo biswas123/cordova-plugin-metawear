@@ -37,6 +37,7 @@
     <source-file src='src/android/BatteryLevel.java' target-dir='src/com/mbientlab/metawear/cordova'/>
     <source-file src='src/android/SupportedModules.java' target-dir='src/com/mbientlab/metawear/cordova'/>
     <source-file src='src/android/MWAccelerometer.java' target-dir='src/com/mbientlab/metawear/cordova'/>
+    <source-file src='src/android/StepCounter.java' target-dir='src/com/mbientlab/metawear/cordova'/>
     <source-file src='src/android/MWGyroscope.java' target-dir='src/com/mbientlab/metawear/cordova'/>
     <source-file src='src/android/BluetoothScanner.java' target-dir='src/com/mbientlab/metawear/cordova'/>
     <source-file src='src/android/GpioModule.java' target-dir='src/com/mbientlab/metawear/cordova'/>
@@ -48,6 +49,9 @@
     <header-file src='src/ios/vendor/headers/MBLMetaWear.h'/>
     <header-file src='src/ios/vendor/headers/MBLMetaWearManager.h'/>
     <header-file src='src/ios/vendor/headers/MBLAccelerometer.h'/>
+    <header-file src='src/ios/vendor/headers/MBLAccelerometerBMI160.h'/>
+    <header-file src='src/ios/vendor/headers/MBLAccelerometerBosch.h'/>
+    <header-file src='src/ios/vendor/headers/bmi160.h'/>
     <header-file src='src/ios/vendor/headers/MBLAccelerometerData.h'/>
     <header-file src='src/ios/vendor/headers/MBLGyro.h'/>
     <header-file src='src/ios/vendor/headers/MBLGyroData.h'/>
@@ -82,6 +86,8 @@
     <source-file src='src/ios/BatteryLevel.m'/>
     <header-file src='src/ios/MWAccelerometer.h'/>
     <source-file src='src/ios/MWAccelerometer.m'/>
+    <header-file src='src/ios/StepCounter.h'/>
+    <source-file src='src/ios/StepCounter.m'/>
     <header-file src='src/ios/MWGyroscope.h'/>
     <source-file src='src/ios/MWGyroscope.m'/>
     <config-file target="config.xml" parent="/*">

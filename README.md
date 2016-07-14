@@ -74,6 +74,7 @@ mbientlab.mwdevice.supportedModules(successCallback, failureCallback);
 successCallback.gpio //value will be true if supported,  false if not.
 successCallback.accelerometer
 successCallback.gyroscope
+successCallback.stepCounter
 ```
 
 ###readRssi
@@ -115,7 +116,37 @@ Stops the accelerometer and stops streaming data.
 mbientlab.mwdevice.stopAccelerometer();
 ```
 
+###startStepCounter
+
+Note: BMI160 devices only
+
+Starts the step counter on the board and streams the data to the callback until it is stopped.  The callback result is an object with text that says 'TOOK_A_STEP' when a step is detected.
+
+```Javascript
+var failure = function(result){
+}
+
+var totalSteps = 0;
+var success = function(result){
+   totalSteps = totalSteps + 1;
+   console.log(result);
+   console.log(totalSteps + " total steps");
+}
+
+mbientlab.mwdevice.startStepCounter(success, failure);
+```
+
+###stopStepCounter
+
+Stops the step counter and stops streaming data.
+
+```Javascript
+mbientlab.mwdevice.stopStepCounter();
+```
+
 ###startGyroscope
+
+NOTE:  BMI160 devices only.
 
 Starts the gyroscope on the board and streams the data to the callback until it is stopped.  The callback result is an object with x,y and z values from the gyroscope.
 

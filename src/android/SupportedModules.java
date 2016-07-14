@@ -35,6 +35,7 @@ public class SupportedModules {
     public void getSupportedModules() {
         boolean accelerometerSupported = true;
         boolean gyroscopeSupported = true;
+        boolean stepCounterSupported = true;
 
         try {
             mwDevice.getMwBoard().getModule(Accelerometer.class);
@@ -46,6 +47,7 @@ public class SupportedModules {
             mwDevice.getMwBoard().getModule(Bmi160Gyro.class);
         }catch(UnsupportedModuleException e){
             gyroscopeSupported = false;
+            stepCounterSupported = false;
         }
 
         JSONObject resultObject = new JSONObject();
@@ -53,6 +55,7 @@ public class SupportedModules {
             resultObject.put("gpio", true);
             resultObject.put("accelerometer", accelerometerSupported);
             resultObject.put("gyroscope", gyroscopeSupported);
+            resultObject.put("stepCounter", stepCounterSupported);
         } catch (JSONException e){
             Log.e("Metawear Cordova Error: ", e.toString());
         }

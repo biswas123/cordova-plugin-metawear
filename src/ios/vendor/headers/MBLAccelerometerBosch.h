@@ -33,8 +33,8 @@
  * contact MbientLab via email: hello@mbientlab.com
  */
 
-#import <MetaWear/MBLAccelerometer.h>
-#import <MetaWear/bmi160.h>
+#import "MBLAccelerometer.h"
+#import "bmi160.h"
 @class MBLNumericData;
 @class MBLAccelerometerBoschLowOrHighGEvent;
 

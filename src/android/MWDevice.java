@@ -53,6 +53,8 @@ public class MWDevice extends CordovaPlugin implements ServiceConnection{
     public static final String READ_BATTERY_LEVEL = "readBatteryLevel";
     public static final String START_ACCELEROMETER = "startAccelerometer";
     public static final String STOP_ACCELEROMETER = "stopAccelerometer";
+    public static final String START_STEP_COUNTER = "startStepCounter";
+    public static final String STOP_STEP_COUNTER = "stopStepCounter";
     public static final String START_GYROSCOPE = "startGyroscope";
     public static final String STOP_GYROSCOPE = "stopGyroscope";
     public static final String GPIO_READ_ANALOG = "gpioReadAnalogIn";
@@ -71,6 +73,7 @@ public class MWDevice extends CordovaPlugin implements ServiceConnection{
     private RSSI rssi;
     private BatteryLevel batteryLevel;
     private MWAccelerometer mwAccelerometer;
+    private StepCounter stepCounter;
     private MWGyroscope mwGyroscope;
     private BluetoothScanner bluetoothScanner;
     private GpioModule gpioModule;
@@ -92,6 +95,7 @@ public class MWDevice extends CordovaPlugin implements ServiceConnection{
         batteryLevel = new BatteryLevel(this);
         supportedModules = new SupportedModules(this);
         mwAccelerometer = new MWAccelerometer(this);
+        stepCounter = new StepCounter(this);
         mwGyroscope = new MWGyroscope(this);
         gpioModule = new GpioModule(this);
         mwCallbackContexts = new HashMap<String, CallbackContext>(); 
@@ -154,6 +158,13 @@ public class MWDevice extends CordovaPlugin implements ServiceConnection{
             return true;
         } else if(action.equals(STOP_ACCELEROMETER)){
             mwAccelerometer.stopAccelerometer();
+            return true;
+        }  else if(action.equals(START_STEP_COUNTER)){
+            mwCallbackContexts.put(START_STEP_COUNTER, callbackContext);
+            stepCounter.startStepCounter();
+            return true;
+        } else if(action.equals(STOP_STEP_COUNTER)){
+            stepCounter.stopStepCounter();
             return true;
         }  else if(action.equals(START_GYROSCOPE)){
             mwCallbackContexts.put(START_GYROSCOPE, callbackContext);

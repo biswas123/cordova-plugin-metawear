@@ -5,12 +5,14 @@
 #import "MBLMetaWear.h"
 #import "MBLMetaWearManager.h"
 #import "MWAccelerometer.h"
+#import "StepCounter.h"
 #import "MWGyroscope.h"
 #import "MWSupportedModules.h"
 
 @implementation MWDevice {
   NSArray *scannedDevices;
   RSSI *rssi;
+  StepCounter *stepCounter;
   BatteryLevel *batteryLevel;
   MWAccelerometer *accelerometer;
   MWGyroscope *gyroscope;
@@ -140,6 +142,22 @@
 {
   NSLog(@"stop accelerometer on %@", accelerometer);
   [accelerometer stopAccelerometer:command];
+}
+
+- (void)startStepCounter:(CDVInvokedUrlCommand*)command
+{
+  if(stepCounter == nil)
+    {
+      stepCounter = [[StepCounter alloc] initWithDevice:self];
+    }
+  NSLog(@"read step counter on %@", stepCounter);
+  [stepCounter startStepCounter:command];
+}
+
+- (void)stopStepCounter:(CDVInvokedUrlCommand*)command
+{
+  NSLog(@"stop step counter on %@", stepCounter);
+  [stepCounter stopStepCounter:command];
 }
 
 - (void)startGyroscope:(CDVInvokedUrlCommand*)command

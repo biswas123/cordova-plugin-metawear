@@ -53,6 +53,16 @@ module.exports.stopAccelerometer = function(){
     exec(null, null, "MWDevice", 'stopAccelerometer', []);
 }
 
+module.exports.startStepCounter = function(success, failure){
+    console.log("MWDevice.js: start Step Counter");
+    exec(success, failure, "MWDevice", 'startStepCounter', []);
+}
+
+module.exports.stopStepCounter = function(){
+    console.log("MWDevice.js: stopStepCounter");
+    exec(null, null, "MWDevice", 'stopStepCounter', []);
+}
+
 module.exports.gpioReadAnalogIn = function(pin, success, failure, pullup, readMode){
     console.log("MWDevice.js: gpioReadAnalogIn");
     if(pullup === undefined){

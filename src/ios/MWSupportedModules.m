@@ -18,13 +18,15 @@
   NSLog(@"getSupportedModules called");
   NSNumber *accelerometerSupported = @(YES);
   NSNumber *gyroscopeSupported = @(YES);
-
+  NSNumber *stepCounterSupported = @(YES);
+  
   if(mwDevice.connectedDevice.accelerometer == nil){
     accelerometerSupported = @(NO);
   }
 
   if(mwDevice.connectedDevice.gyro == nil){
     gyroscopeSupported = @(NO);
+    stepCounterSupported = @(NO);
   }
 
   NSMutableDictionary *supportedModules = [NSMutableDictionary dictionaryWithDictionary:@{}];
@@ -32,6 +34,7 @@
   supportedModules[@"gpio"] = @(YES);
   supportedModules[@"accelerometer"] = accelerometerSupported;
   supportedModules[@"gyroscope"] = gyroscopeSupported;
+  supportedModules[@"stepCounter"] = stepCounterSupported;
   pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:supportedModules];
   [mwDevice.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
