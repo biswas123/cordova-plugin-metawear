@@ -34,7 +34,7 @@
  */
 
 #import <UIKit/UIKit.h>
-#import <MetaWear/MBLModule.h>
+#import "MBLModule.h"
 #import <Bolts/Bolts.h>
 
 NS_ASSUME_NONNULL_BEGIN

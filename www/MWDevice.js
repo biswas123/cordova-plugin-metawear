@@ -43,6 +43,65 @@ module.exports.readBatteryLevel = function(success, failure){
     exec(success, failure, "MWDevice", 'readBatteryLevel', []);
 }
 
+module.exports.playLED = function(ledArguments){
+    /*channel, highIntensity, lowIntensity,
+      repeatCount, pulseDuration, riseTime,
+      highTime, fallTime*/
+    var errors = {}
+    
+    if((ledArguments.channel !== 'RED') &&
+       (ledArguments.channel !== 'GREEN') && (ledArguments.channel !== 'BLUE')){
+        errors['channel'] = "invalid channel " + ledArguments.channel;
+    }
+    
+    if((ledArguments.highIntensity !== undefined) &&
+       (isNaN(ledArguments.highIntensity)) ||
+       (ledArguments.highIntensity < 0) || (ledArguments.highIntensity > 31)){
+        errors['highIntensity'] = "invalid highIntensity value " + ledArguments.highIntensity;
+    }
+    
+    if((ledArguments.lowIntensity !== undefined) &&
+       (isNaN(ledArguments.lowIntensity)) ||
+       (ledArguments.lowIntensity < 0) || (ledArguments.lowIntensity > 31)){
+        errors['lowIntensity'] = "invalid lowIntensity value " + ledArguments.lowIntensity;
+    }
+
+    if((ledArguments.repeatCount !== undefined) &&
+       (isNaN(ledArguments.repeatCount)) ||
+       (ledArguments.repeatCount < -1) || (ledArguments.repeatCount > 255)){
+        errors['repeatCount'] = "invalid repeatCount value " + ledArguments.repeatCount;
+    }
+
+
+    var millisecondParameters = {pulseDuration: ledArguments.pulseDuration,
+                                 riseTime: ledArguments.riseTime,
+                                 highTime: ledArguments.highTime,
+                                 fallTime: ledArguments.fallTime};
+
+    for(var parameter in millisecondParameters){
+        if((millisecondParameters[parameter] !== undefined) &&
+           (isNaN(millisecondParameters[parameter])) ||
+           (millisecondParameters[parameter] < 0)){
+            errors[parameter] = "invalid " + parameter + " riseTime value " +
+                millisecondParameters[parameter];
+        }
+    }
+
+    console.log("MWDevice.js: playLED");
+
+    if(Object.keys(errors).length > 0){
+        errors['status']= 'ERROR';
+        return(errors);
+    }else{
+        exec(null, null, "MWDevice", 'playLED', [ledArguments]);
+        return({status: 'ok'});
+    }
+};
+
+module.exports.stopLED = function(){
+    exec(null, null, "MWDevice", "stopLED", []);
+};
+
 module.exports.startAccelerometer = function(success, failure){
     console.log("MWDevice.js: start Accelerometer");
     exec(success, failure, "MWDevice", 'startAccelerometer', []);
