@@ -37,6 +37,7 @@
     <source-file src='src/android/BatteryLevel.java' target-dir='src/com/mbientlab/metawear/cordova'/>
     <source-file src='src/android/SupportedModules.java' target-dir='src/com/mbientlab/metawear/cordova'/>
     <source-file src='src/android/MWAccelerometer.java' target-dir='src/com/mbientlab/metawear/cordova'/>
+    <source-file src='src/android/MWMultiChannelTemperature.java' target-dir='src/com/mbientlab/metawear/cordova'/>
     <source-file src='src/android/StepCounter.java' target-dir='src/com/mbientlab/metawear/cordova'/>
     <source-file src='src/android/LEDModule.java' target-dir='src/com/mbientlab/metawear/cordova'/>
     <source-file src='src/android/MWGyroscope.java' target-dir='src/com/mbientlab/metawear/cordova'/>

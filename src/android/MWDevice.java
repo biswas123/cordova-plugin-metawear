@@ -55,6 +55,7 @@ public class MWDevice extends CordovaPlugin implements ServiceConnection{
     public static final String STOP_LED = "stopLED";
     public static final String START_ACCELEROMETER = "startAccelerometer";
     public static final String STOP_ACCELEROMETER = "stopAccelerometer";
+    public static final String READ_TEMPERATURE = "readTemperature";
     public static final String START_STEP_COUNTER = "startStepCounter";
     public static final String STOP_STEP_COUNTER = "stopStepCounter";
     public static final String START_GYROSCOPE = "startGyroscope";
@@ -74,6 +75,7 @@ public class MWDevice extends CordovaPlugin implements ServiceConnection{
     private SupportedModules supportedModules;
     private RSSI rssi;
     private LEDModule ledModule;
+    private MWMultiChannelTemperature mwMultiChannelTemperature;
     private BatteryLevel batteryLevel;
     private MWAccelerometer mwAccelerometer;
     private StepCounter stepCounter;
@@ -99,6 +101,7 @@ public class MWDevice extends CordovaPlugin implements ServiceConnection{
         supportedModules = new SupportedModules(this);
         ledModule = new LEDModule(this);
         mwAccelerometer = new MWAccelerometer(this);
+        mwMultiChannelTemperature = new MWMultiChannelTemperature(this);
         stepCounter = new StepCounter(this);
         mwGyroscope = new MWGyroscope(this);
         gpioModule = new GpioModule(this);
@@ -169,7 +172,11 @@ public class MWDevice extends CordovaPlugin implements ServiceConnection{
         } else if(action.equals(STOP_ACCELEROMETER)){
             mwAccelerometer.stopAccelerometer();
             return true;
-        }  else if(action.equals(START_STEP_COUNTER)){
+        } else if(action.equals(READ_TEMPERATURE)){
+            mwCallbackContexts.put(READ_TEMPERATURE, callbackContext);
+            mwMultiChannelTemperature.readTemperature((String) args.get(0));
+            return true;
+        } else if(action.equals(START_STEP_COUNTER)){
             mwCallbackContexts.put(START_STEP_COUNTER, callbackContext);
             stepCounter.startStepCounter();
             return true;
