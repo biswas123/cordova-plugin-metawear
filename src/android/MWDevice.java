@@ -51,6 +51,8 @@ public class MWDevice extends CordovaPlugin implements ServiceConnection{
     public static final String DISCONNECT = "disconnect";
     public static final String READ_RSSI = "readRssi";
     public static final String READ_BATTERY_LEVEL = "readBatteryLevel";
+    public static final String PLAY_LED = "playLED";
+    public static final String STOP_LED = "stopLED";
     public static final String START_ACCELEROMETER = "startAccelerometer";
     public static final String STOP_ACCELEROMETER = "stopAccelerometer";
     public static final String START_STEP_COUNTER = "startStepCounter";
@@ -71,6 +73,7 @@ public class MWDevice extends CordovaPlugin implements ServiceConnection{
     private boolean initialized = false;
     private SupportedModules supportedModules;
     private RSSI rssi;
+    private LEDModule ledModule;
     private BatteryLevel batteryLevel;
     private MWAccelerometer mwAccelerometer;
     private StepCounter stepCounter;
@@ -94,6 +97,7 @@ public class MWDevice extends CordovaPlugin implements ServiceConnection{
         rssi = new RSSI(this);
         batteryLevel = new BatteryLevel(this);
         supportedModules = new SupportedModules(this);
+        ledModule = new LEDModule(this);
         mwAccelerometer = new MWAccelerometer(this);
         stepCounter = new StepCounter(this);
         mwGyroscope = new MWGyroscope(this);
@@ -151,6 +155,12 @@ public class MWDevice extends CordovaPlugin implements ServiceConnection{
         } else if(action.equals(READ_BATTERY_LEVEL)){
             mwCallbackContexts.put(READ_BATTERY_LEVEL, callbackContext);
             batteryLevel.readBatteryLevel();
+            return true;
+        } else if(action.equals(PLAY_LED)){
+            ledModule.playLED(args);
+            return true;
+        } else if(action.equals(STOP_LED)){
+            ledModule.stopLED();
             return true;
         } else if(action.equals(START_ACCELEROMETER)){
             mwCallbackContexts.put(START_ACCELEROMETER, callbackContext);

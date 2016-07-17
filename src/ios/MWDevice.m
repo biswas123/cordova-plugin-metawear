@@ -5,6 +5,7 @@
 #import "MBLMetaWear.h"
 #import "MBLMetaWearManager.h"
 #import "MWAccelerometer.h"
+#import "LEDModule.h"
 #import "StepCounter.h"
 #import "MWGyroscope.h"
 #import "MWSupportedModules.h"
@@ -12,6 +13,7 @@
 @implementation MWDevice {
   NSArray *scannedDevices;
   RSSI *rssi;
+  LEDModule *ledModule;
   StepCounter *stepCounter;
   BatteryLevel *batteryLevel;
   MWAccelerometer *accelerometer;
@@ -126,6 +128,22 @@
     }
   NSLog(@"read RSSI on %@", rssi);
   [batteryLevel readBatteryLevel:command];
+}
+
+- (void)playLED:(CDVInvokedUrlCommand*)command
+{
+  if(ledModule == nil)
+    {
+      ledModule = [[LEDModule alloc] initWithDevice:self];
+    }
+  NSLog(@"play LED on %@", ledModule);
+  [ledModule playLED:command];
+}
+
+- (void)stopLED:(CDVInvokedUrlCommand*)command
+{
+  NSLog(@"stop LED on %@", ledModule);
+  [ledModule stopLED:command];
 }
 
 - (void)startAccelerometer:(CDVInvokedUrlCommand*)command
