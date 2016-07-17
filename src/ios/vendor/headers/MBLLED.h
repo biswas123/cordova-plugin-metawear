@@ -35,7 +35,7 @@
 
 #import <UIKit/UIKit.h>
 #import "MBLModule.h"
-#import <Bolts/Bolts.h>
+#import "Bolts.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

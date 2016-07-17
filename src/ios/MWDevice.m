@@ -130,7 +130,7 @@
   [batteryLevel readBatteryLevel:command];
 }
 
-- (void)startLED:(CDVInvokedUrlCommand*)command
+- (void)playLED:(CDVInvokedUrlCommand*)command
 {
   if(ledModule == nil)
     {
