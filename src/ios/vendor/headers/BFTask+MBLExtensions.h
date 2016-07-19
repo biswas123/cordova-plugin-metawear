@@ -33,8 +33,8 @@
  * contact MbientLab via email: hello@mbientlab.com
  */
 
-#import <Bolts/Bolts.h>
-#import <MetaWear/MBLConstants.h>
+#import "Bolts.h"
+#import "MBLConstants.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

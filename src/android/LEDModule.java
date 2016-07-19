@@ -109,6 +109,6 @@ public class LEDModule {
     }
 
     public void stopLED(){
-        getLed().play(false);
+        getLed().stop(true);
     }
 }

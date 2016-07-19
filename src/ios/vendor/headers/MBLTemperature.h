@@ -33,10 +33,11 @@
  * contact MbientLab via email: hello@mbientlab.com
  */
 
-#import <MetaWear/MBLConstants.h>
-#import <MetaWear/MBLEvent.h>
-#import <MetaWear/MBLModule.h>
-#import <MetaWear/MBLExternalThermistor.h>
+#import "MBLConstants.h"
+#import "MBLEvent.h"
+#import "MBLModule.h"
+#import "MBLExternalThermistor.h"
+#import "BFTask+MBLExtensions.h"
 @class MBLNumericData;
 @class MBLMetaWear;
 

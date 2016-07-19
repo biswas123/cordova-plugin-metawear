@@ -33,9 +33,9 @@
  * contact MbientLab via email: hello@mbientlab.com
  */
 
-#import <MetaWear/MBLConstants.h>
-#import <MetaWear/MBLRegister.h>
-#import <Bolts/Bolts.h>
+#import "MBLConstants.h"
+#import "MBLRegister.h"
+#import "Bolts.h"
 @class MBLEvent<ResultType>;
 
 NS_ASSUME_NONNULL_BEGIN
