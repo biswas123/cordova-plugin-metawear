@@ -174,7 +174,7 @@ public class MWDevice extends CordovaPlugin implements ServiceConnection{
             return true;
         } else if(action.equals(READ_TEMPERATURE)){
             mwCallbackContexts.put(READ_TEMPERATURE, callbackContext);
-            mwMultiChannelTemperature.readTemperature((String) args.get(0));
+            mwMultiChannelTemperature.readTemperature(args);
             return true;
         } else if(action.equals(START_STEP_COUNTER)){
             mwCallbackContexts.put(START_STEP_COUNTER, callbackContext);

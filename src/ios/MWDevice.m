@@ -6,6 +6,7 @@
 #import "MBLMetaWearManager.h"
 #import "MWAccelerometer.h"
 #import "LEDModule.h"
+#import "MWMultiChannelTemperature.h"
 #import "StepCounter.h"
 #import "MWGyroscope.h"
 #import "MWSupportedModules.h"
@@ -18,6 +19,7 @@
   BatteryLevel *batteryLevel;
   MWAccelerometer *accelerometer;
   MWGyroscope *gyroscope;
+  MWMultiChannelTemperature *mWMultiChannelTemperature;
   MWSupportedModules *supportedModules;
 }
 
@@ -176,6 +178,16 @@
 {
   NSLog(@"stop step counter on %@", stepCounter);
   [stepCounter stopStepCounter:command];
+}
+
+- (void)readTemperature:(CDVInvokedUrlCommand*)command
+{
+  if(mWMultiChannelTemperature == nil)
+    {
+      mWMultiChannelTemperature = [[MWMultiChannelTemperature alloc] initWithDevice:self];
+    }
+  NSLog(@"read temperature on %@", mWMultiChannelTemperature);
+  [mWMultiChannelTemperature readTemperature:command];
 }
 
 - (void)startGyroscope:(CDVInvokedUrlCommand*)command

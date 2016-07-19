@@ -73,7 +73,14 @@ public class MWMultiChannelTemperature{
         return temperatureModule;
     }
 
-    public void readTemperature(String source){
+    public void readTemperature(JSONArray arguments){
+        JSONObject argumentObject = null;
+        String source = null;
+
+        try {
+            argumentObject = arguments.getJSONObject(0);
+            source = argumentObject.getString("sensor");
+        } catch(JSONException e){}
 
         Log.i("MultiChannelTemperature Read Temperature", source);
         rawSource = 0;

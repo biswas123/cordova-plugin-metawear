@@ -114,7 +114,7 @@ module.exports.stopAccelerometer = function(){
 
 module.exports.readTemperature = function(success, failure, thermistorArguments){
     console.log("MWDevice.js: read temperature");
-    exec(success, failure, "MWDevice", 'readTemperature', [thermistorArguments.sensor]);
+    exec(success, failure, "MWDevice", 'readTemperature', [thermistorArguments]);
 }
 
 module.exports.startStepCounter = function(success, failure){

@@ -58,10 +58,15 @@
     <header-file src='src/ios/vendor/headers/MBLGyro.h'/>
     <header-file src='src/ios/vendor/headers/MBLGyroData.h'/>
     <header-file src='src/ios/vendor/headers/MBLOrientationData.h'/>
+    <header-file src='src/ios/vendor/headers/MBLTemperature.h'/>
+    <header-file src='src/ios/vendor/headers/MBLExternalThermistor.h'/>
+    <header-file src='src/ios/vendor/headers/MBLData.h'/>
+    <header-file src='src/ios/vendor/headers/MBLNumericData.h'/>
     <header-file src='src/ios/vendor/headers/MBLDataSample.h'/>
     <header-file src='src/ios/vendor/headers/MBLEvent.h'/>
     <header-file src='src/ios/vendor/headers/MBLRegister.h'/>
     <header-file src='src/ios/vendor/headers/MBLModule.h'/>
+    <header-file src='src/ios/vendor/headers/BFTask+MBLExtensions.h'/>
     <header-file src='src/ios/vendor/headers/MBLLED.h'/>
     <header-file src='src/ios/vendor/headers/Bolts/Bolts.h'/>
     <header-file src='src/ios/vendor/headers/Bolts/BoltsVersion.h'/>
@@ -91,6 +96,8 @@
     <source-file src='src/ios/BatteryLevel.m'/>
     <header-file src='src/ios/MWAccelerometer.h'/>
     <source-file src='src/ios/MWAccelerometer.m'/>
+    <header-file src='src/ios/MWMultiChannelTemperature.h'/>
+    <source-file src='src/ios/MWMultiChannelTemperature.m'/>
     <header-file src='src/ios/StepCounter.h'/>
     <source-file src='src/ios/StepCounter.m'/>
     <header-file src='src/ios/MWGyroscope.h'/>

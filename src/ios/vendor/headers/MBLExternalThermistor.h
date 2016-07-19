@@ -33,7 +33,7 @@
  * contact MbientLab via email: hello@mbientlab.com
  */
 
-#import <MetaWear/MBLData.h>
+#import "MBLData.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
