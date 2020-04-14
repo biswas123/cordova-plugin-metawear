@@ -1,0 +1,19 @@
+{
+  "name": "cordova-plugin-metawear",
+  "version": "1.0.0",
+  "description": "Cordova Plugin ==============",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cande1gut/cordova-plugin-metawear.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cande1gut/cordova-plugin-metawear/issues"
+  },
+  "homepage": "https://github.com/cande1gut/cordova-plugin-metawear#readme"
+}
