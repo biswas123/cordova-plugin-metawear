@@ -127,6 +127,16 @@ module.exports.stopStepCounter = function(){
     exec(null, null, "MWDevice", 'stopStepCounter', []);
 }
 
+module.exports.startStepCounterLogs = function(overwrite, success, failure){
+    console.log("MWDevice.js: start Step Counter logs");
+    exec(success, failure, "MWDevice", 'startStepCounterLogs', [overwrite]);
+}
+
+module.exports.downloadStepCounterLogs = function(success, failure){
+    console.log("MWDevice.js: downloadStepCounterLogs");
+    exec(success, failure, "MWDevice", 'downloadStepCounterLogs', []);
+}
+
 module.exports.gpioReadAnalogIn = function(pin, success, failure, pullup, readMode){
     console.log("MWDevice.js: gpioReadAnalogIn");
     if(pullup === undefined){

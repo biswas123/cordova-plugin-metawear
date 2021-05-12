@@ -66,6 +66,9 @@ public class MWDevice extends CordovaPlugin implements ServiceConnection{
     public static final String STATUS = "status";
     public static final String MODULE_NOT_SUPPORTED = "MODULE_NOT_SUPPORTED";
 
+    public static final String START_STEP_COUNTER_LOGS = "startStepCounterLogs";
+    public static final String DOWNLOAD_STEP_COUNTER_LOGS = "downloadStepCounterLogs";
+
     private MetaWearBleService.LocalBinder serviceBinder;
 
     private String mwMacAddress;
@@ -182,6 +185,15 @@ public class MWDevice extends CordovaPlugin implements ServiceConnection{
             return true;
         } else if(action.equals(STOP_STEP_COUNTER)){
             stepCounter.stopStepCounter();
+            return true;
+        } else if(action.equals(START_STEP_COUNTER_LOGS)){
+            mwCallbackContexts.put(START_STEP_COUNTER_LOGS, callbackContext);
+            boolean overwrite = (Boolean) args.get(0);
+            stepCounter.startStepCounterLogs(overwrite);
+            return true;
+        } else if(action.equals(DOWNLOAD_STEP_COUNTER_LOGS)){
+            mwCallbackContexts.put(DOWNLOAD_STEP_COUNTER_LOGS, callbackContext);
+            stepCounter.stopStepCounterLogs();
             return true;
         }  else if(action.equals(START_GYROSCOPE)){
             mwCallbackContexts.put(START_GYROSCOPE, callbackContext);
