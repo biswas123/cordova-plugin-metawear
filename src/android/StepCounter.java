@@ -2,6 +2,8 @@ package com.mbientlab.metawear.cordova;
 
 import com.mbientlab.metawear.AsyncOperation;
 
+import android.annotation.SuppressLint;
+import android.text.TextUtils;
 import android.util.Log;
 
 import org.apache.cordova.PluginResult;
@@ -21,8 +23,10 @@ import com.mbientlab.metawear.UnsupportedModuleException;
 
 import com.mbientlab.metawear.module.Logging;
 
-import java.util.Arrays;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by Lance Gleason of Polyglot Programming LLC. on 10/11/2015.
@@ -108,6 +112,8 @@ public class StepCounter {
             Logging logging = mwDevice.getMwBoard().getModule(Logging.class);
             logging.stopLogging();
 
+            ArrayList<String> timestamps = new ArrayList<String>();
+
             logging.downloadLog(100, new Logging.DownloadHandler() {
                 @Override
                 public void onProgressUpdate(int nEntriesLeft, int totalEntries) {
@@ -115,10 +121,15 @@ public class StepCounter {
                 }
 
                 @Override
-                public void receivedUnknownLogEntry(byte logId, Calendar timestamp, byte[] data) {
-                    super.receivedUnknownLogEntry(logId, timestamp, data);
+                public void receivedUnknownLogEntry(byte logId, Calendar cal, byte[] data) {
+                    super.receivedUnknownLogEntry(logId, cal, data);
+                    Date date = cal.getTime();
+                    @SuppressLint("SimpleDateFormat")
+                    SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
+                    String timestamp = ft.format(date);
+                    timestamps.add(timestamp);
 
-                    Log.i("MainActivity", String.format("Unknown log entry: {id: %d, data: %s}", logId, Arrays.toString(data)));
+                    Log.i("Metawear Cordova", String.format("Unknown log entry: {id: %d, data: %s}", logId, timestamp));
                 }
 
                 @Override
@@ -132,9 +143,15 @@ public class StepCounter {
                 public void success(Integer result) {
                     super.success(result);
 
-                    PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, result);
-                    pluginResult.setKeepCallback(true);
-                    mwDevice.getMwCallbackContexts().get(mwDevice.DOWNLOAD_STEP_COUNTER_LOGS).sendPluginResult(pluginResult);
+                    if (timestamps.size() > 0) {
+                        PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, TextUtils.join(", ", timestamps));
+                        pluginResult.setKeepCallback(true);
+                        mwDevice.getMwCallbackContexts().get(mwDevice.DOWNLOAD_STEP_COUNTER_LOGS).sendPluginResult(pluginResult);
+                    } else {
+                        PluginResult pluginResult = new PluginResult(PluginResult.Status.OK, "");
+                        pluginResult.setKeepCallback(true);
+                        mwDevice.getMwCallbackContexts().get(mwDevice.DOWNLOAD_STEP_COUNTER_LOGS).sendPluginResult(pluginResult);
+                    }
                 }
 
                 @Override
